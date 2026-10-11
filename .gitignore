@@ -7,3 +7,6 @@
 # Basura de sistema
 .DS_Store
 Thumbs.db
+
+# Dump de produccion de Renacer (contiene hashes de claves): no versionar
+/sql/admin_renacer.sql

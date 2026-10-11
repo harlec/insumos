@@ -30,6 +30,17 @@ if (isset($_POST) && !empty($_POST)) {
 			$_SESSION['nombres']  = $user_list['nombres'];
 			$_SESSION['id_usr']  = $user_list['id_usuario'];
 			$_SESSION['type']    = $user_list['rol'];
+			// Con roles configurables: 'admin' si el rol es administrador, 'operador' en otro caso
+			// (varias pantallas aún comparan $_SESSION['type']).
+			require_once __DIR__ . '/permisos.php';
+			$rid = (int)($user_list['rol_id'] ?? 0);
+			if ($rid && ($db = permisos_db())) {
+				$rr = $db->query("SELECT nombre, es_admin FROM roles WHERE id_rol = $rid AND estado = 1");
+				if ($rr && ($rol = $rr->fetch_assoc())) {
+					$_SESSION['type']       = $rol['es_admin'] ? 'admin' : 'operador';
+					$_SESSION['rol_nombre'] = $rol['nombre'];
+				}
+			}
 			$_SESSION['tienda']  = $user_list['tienda'];
 
 			// Redirigir a tablet si el usuario tiene ese modo activo

@@ -5,12 +5,7 @@ include('inc/sdba/sdba.php');
 include_once('inc/medios_pago.php');
 require_once('inc/dashboard_data.php');
 
-// Control de acceso - Solo usuarios específicos
-$usuarios_permitidos = ['hars', 'susan', 'robert'];
-if (!in_array(strtolower(trim($_SESSION['usuario'] ?? '')), $usuarios_permitidos)) {
-    header("Location: venta.php");
-    exit;
-}
+// El acceso al Escritorio lo controla el permiso del módulo 'dashboard' (inc/control.php).
 
 $hoy = date('Y-m-d');
 $mes_actual = date('Y-m');
