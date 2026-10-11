@@ -24,9 +24,9 @@ body.esc button{font-family:inherit}
 .esc-brand b{font-size:24px;font-weight:700}
 .esc-nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0}
 .esc-nav::-webkit-scrollbar{display:none}
-.esc-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 13px;color:#6b665f!important;white-space:nowrap;flex-shrink:0}
+.esc-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 4px;width:86px;flex:0 0 86px;color:#6b665f!important;white-space:nowrap}
 .esc-nav-item i{font-size:28px}
-.esc-nav-item span{font-size:13px}
+.esc-nav-item span{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .esc-nav-item:hover{background:#fbf3ef}
 .esc-nav-item.active{background:var(--primary);color:#fff!important}
 .esc-nav-item.active i{color:#fff}

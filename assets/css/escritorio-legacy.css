@@ -12,6 +12,18 @@
 .esc-legacy .container-fluid{padding-left:0;padding-right:0}
 .esc-legacy .kdashboard{padding:0;border-radius:0}
 
+/* ── Formulario lateral (Nueva categoría, Nuevo proveedor…) como tarjeta ── */
+.esc-legacy .detalles:has(>.titulo-n){background:#fff;border:1px solid var(--border);border-radius:var(--radius-card);padding:18px 20px 20px;flex:1 1 340px;max-width:460px}
+.esc-legacy .detalles>.titulo-n{border-bottom:1px solid var(--row-line);margin-bottom:14px}
+.esc-legacy .detalles>.titulo-n h3{font-size:16px;padding:0 0 12px}
+.esc-legacy .detalles>.container-fluid{padding:0}
+.esc-legacy .detalles>.container-fluid>.row{margin:0}
+.esc-legacy .detalles>.container-fluid>.row>[class*=col-]{padding:0}
+.esc-legacy .detalles form br{display:none}
+.esc-legacy .detalles form .form-group{margin-bottom:14px}
+@media (min-width:768px){.esc-legacy .detalles:has(>.titulo-n){margin-top:50px}}
+@media (max-width:767px){.esc-legacy .detalles:has(>.titulo-n){max-width:none;flex-basis:100%}}
+
 /* ── Pestañas del módulo (antes barra gris oscura) ── */
 .esc-legacy .esc-subnav{background:#fff;border-bottom:1px solid var(--border);margin:0}
 .esc-legacy .submenu{background:transparent;min-height:0;max-width:1600px;margin:0 auto;padding:0 18px}
@@ -25,6 +37,12 @@
 /* ── Título de pantalla ── */
 .esc-legacy .titulo,.esc-legacy .titulo-n{background:transparent;color:var(--ink)}
 .esc-legacy .titulo h3,.esc-legacy .titulo-n h3,.esc-legacy .titulo span{margin:0;padding:12px 2px 12px;font-size:22px;font-weight:600;text-transform:none;letter-spacing:0}
+
+/* Título con botón de acción a la derecha (+ Agregar …) */
+.esc-legacy .titulo>.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0}
+.esc-legacy .titulo>.row>[class*=col-]{float:none;width:auto;padding:0}
+.esc-legacy .titulo>.row::before,.esc-legacy .titulo>.row::after{display:none}
+.esc-legacy .titulo #addnew{margin-top:0!important}
 
 /* ── Tarjetas ── */
 .esc-legacy .panel,.esc-legacy .panel-default,.esc-legacy .pa,.esc-legacy .well{background:#fff;border:1px solid var(--border);border-radius:var(--radius-card);box-shadow:none;margin-bottom:16px}
