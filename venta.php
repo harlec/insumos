@@ -1,0 +1,734 @@
+<?php
+session_start();
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
+$usuario = $_SESSION['usuario'];
+$tienda = $_SESSION['tienda'];
+
+include('inc/control.php');
+$fecha = date('d-m-Y');
+$newDate = date("Y-m-d", strtotime($fecha));
+
+include('inc/sdba/sdba.php'); // include main file
+
+
+//variantes
+
+$variantes_p = Sdba::table('variante_p');
+$variantes_p->left_join('variante_vp','variantes','id_variante');
+$variantes_p->left_join('producto_vp','productos','id_producto');
+$variantes_p->left_join('producto_vp','marca','id_marca');
+$variantes_p->where('estado', '1', 'productos');
+$variantes_p_l = $variantes_p->get();
+
+$datos = '';
+$i = 1;
+foreach ($variantes_p_l as $value) {
+    if (empty($value['nom_prod'])) continue;
+	$ventas = Sdba::table('marca');
+	$ventas->where('id_marca',$value['marca']);
+	$ventas_l = $ventas->get_one();
+
+
+	$stocktt = round($value['stockp']/$value['cantidad_vp'], 3);
+	$marcan = $ventas_l['marca'];
+	$precio_final = $value['precio_vp']/$value['cantidad_vp'];
+
+	$datos .='<tr> 
+    			<td style="text-transform:uppercase;" class="nom_prod">'.$value['codigo_producto'].' '.$value['nom_prod'].' '.$marcan.'</td>
+    			<td style="text-transform:uppercase;" class="unidad"><input type="hidden" class="id_vp" value="'.$value['id_vp'].'">'.'<input type="hidden" class="cantidad_vp" value="'.$value['cantidad_vp'].'">'.$value['variante'].'('.$value['cantidad_vp'].')</td>
+    			<td class="stock">'.$stocktt.'</td>
+				<td><input type="hidden" class="precio_venta" value="'.$precio_final.'">'.$value['precio_vp'].'</td>
+    			<td><button id="agregar" value="'.$value['id_producto'].'" class="btn btn-lg btn-success"> + </button></td>
+    		  </tr>';
+    $i++;
+	
+}
+
+
+
+
+
+
+// $ventas = Sdba::table('productos');
+// $ventas->left_join('unidad_prod','unidades','id_unidad');
+// $ventas->left_join('marca','marca','id_marca');
+// $ventas_list = $ventas->get(); 
+
+
+// foreach ($ventas_list as $value) {
+
+// 	$stocktt = $value['stockp'];
+
+// 	$marcan = $value['marca'];
+
+// 		$datos .='<tr> 
+//     			<td style="text-transform:uppercase;" class="nom_prod">'.$value['codigo_producto'].' '.$value['nom_prod'].' '.$marcan.'</td>
+//     			<td style="text-transform:uppercase;" class="unidad">'.$value['codigo'].'</td>
+//     			<td class="stock">'.$stocktt.'</td>
+//     			<td class="precio_venta">'.$value['precio_venta'].'</td>  
+//     			<td><button id="agregar" value="'.$value['id_producto'].'" class="btn btn-xs btn-success"> + </button></td>
+//     		  </tr>';
+//     $i++;
+
+    
+// }
+
+//Variantes
+// $variantes  = Sdba::table('variantes');
+// $variantes->left_join('producto','productos','id_producto');
+// $variantes_lst = $variantes->get();
+// foreach ($variantes_lst as $value1){
+// 	$cantidad_vari = $value1['cantidad'];
+// 	$ventas->where('id_producto',$value1['id_producto']);
+// 	$ventas->left_join('marca','marca','id_marca');
+// 	$ventas_l = $ventas->get_one();
+// 	$marcaf = $ventas_l['marca'];
+// 	$variantes_lst .= '<option value="'.$value1['id_variante'].'-'.$value1['cantidad'].'">'.$value1['nom_prod'].' '.$marcaf.' '.$value1['variante'].'</option>';
+// }
+
+//obtnemos colaboradores
+require_once(__DIR__ . '/inc/cliente_helper.php');
+$fusionados_idx = array_flip(cliente_ids_fusionados());
+$clientes = Sdba::table('clientes');
+$el = $clientes->get();
+$emplel = array();
+foreach ($el as $value) {
+	if (isset($fusionados_idx[(int)$value['id_cliente']])) continue; // cliente fusionado en otro
+	$emplel[]= $value['cliente'];
+}
+
+// Empleados activos, para la opción "Es un empleado" (consumo de abarrotes a descontar de planilla)
+$empleados_venta = Sdba::table('empleados');
+$empleados_venta->where('estado', '1');
+$empleados_venta->order_by('nombres', 'asc');
+$empleados_venta_l = $empleados_venta->get();
+$empleados_venta_opciones = '';
+foreach ($empleados_venta_l as $emp) {
+	$empleados_venta_opciones .= '<option value="' . $emp['id_empleado'] . '">' . htmlspecialchars($emp['nombres'] . ' ' . $emp['apellidos']) . '</option>';
+}
+
+
+
+
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Sistema - Menu Principal</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php $v = '20260331'; ?>
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom.css?v=<?= $v ?>">
+    <!-- <link rel="stylesheet" href="/assets/css/jquery-ui.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.5/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/select2.min.css?v=<?= $v ?>">
+    <link rel="stylesheet" type="text/css" href="/assets/css/jquery-ui.min.css?v=<?= $v ?>">
+</head>
+
+<body class="mobile dashboard">
+	<div class="">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
+	        </div>
+	        <?php menu('4'); ?>
+	      </div>
+	      <div class="submenu">
+	      	<ul class="subtop-tabs">
+	      		<li class="active">
+	      			<a href="venta.php">Registrar venta</a>
+	      		</li>
+	      		<li >
+	      			<a href="ventas.php">Listar ventas</a>
+	      		</li>
+	      		<li>
+	      			<a href="notas_venta.php">Facturar</a>
+	      		</li>
+	      		<li>
+	      			<a href="comprobantes.php">Comprobantes</a>
+	      		</li>
+	      		<!-- <li>
+	      			<a href="ventap.php">Proforma</a>
+	      		</li>
+	      		<li>
+	      			<a href="venta_comprobantes.php">Comprobantes</a>
+	      		</li> -->
+	      	</ul>
+	      </div>
+	    </nav>
+		<div class="kbg">
+			<div class="cuerpo">
+				<div class="titulo">
+					<h3>Registrar Venta</h3>
+				</div>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="kdashboard">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="panel panel-default pa">
+											<div class="panel-body">
+
+											    <form id="venta">
+											    	<div class="row">
+											    		<div class="col-md-3">
+											    			<div class="form-group">
+															    <label for="exampleInputPassword1">Fecha</label>
+															    <input type="date" class="form-control" name="fecha" id="fecha" value="<?php echo $newDate; ?>" placeholder="monto">
+															 </div>
+											    		</div>
+											    		<div class="col-md-4">
+											    			<div class="form-group">
+											    				<label>Tipo de cliente</label>
+											    				<div>
+											    					<label class="radio-inline"><input type="radio" name="es_empleado" value="0" checked> Cliente</label>
+											    					<label class="radio-inline"><input type="radio" name="es_empleado" value="1"> Empleado</label>
+											    				</div>
+											    			</div>
+											    		</div>
+														<div class="col-md-4">
+											    			<div class="form-group" id="bloque-cliente">
+											    				<label for="cliente">Cliente <small class="text-muted">/ DNI (opcional)</small></label>
+											    				<div style="display:flex;gap:6px">
+											    					<input class="form-control" style="text-transform:uppercase;flex:1;min-width:0" type="text" id="cliente" name="cliente" oninput="this.value = this.value.toUpperCase();">
+											    					<input class="form-control" style="width:105px;flex:none" type="text" id="dni_cliente" name="dni_cliente" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="DNI">
+											    				</div>
+											    				<input type="hidden" id="cliente_id" name="cliente_id" value="">
+											    				<input type="hidden" id="corregir_dni" name="corregir_dni" value="0">
+											    				<input type="hidden" id="actualizar_nombre" name="actualizar_nombre" value="0">
+											    				<div id="dni_estado" style="font-size:11px;line-height:1.3;margin-top:2px"></div>
+															</div>
+											    			<div class="form-group" id="bloque-empleado" style="display:none">
+											    				<label for="id_empleado">Empleado</label>
+											    				<select class="form-control" id="id_empleado" name="id_empleado">
+											    					<option value="">-- elegir --</option>
+											    					<?php echo $empleados_venta_opciones; ?>
+											    				</select>
+											    				<label for="cuotas" style="margin-top:8px">Descontar en cuotas (quincenas)</label>
+											    				<input type="number" class="form-control" id="cuotas" name="cuotas" min="1" max="24" value="1">
+											    			</div>
+											    		</div>
+											    	</div>
+
+											    	<div class="row">
+											    		<div class="col-sm-2"></div>
+											    		<div class="col-md-12">	
+													    	<table id="items" class="table table-striped table-condensed">
+																<thead>
+																	<tr >
+																		<th>Cantidad</th>
+																		<th>Descripción</th>
+																		<th>Unidad</th>
+																		<th>Precio</th>
+																		<th>Monto</th>
+																		<th></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr></tr>
+																	
+																</tbody>
+															</table>
+															<div class="text-right">
+																<strong>Total: S/ </strong><input id="total" name="total" type="hidden" id="total"><input id="total1" name="total1" type="text">
+															</div>
+														</div>
+														<div class="col-sm-2"></div>
+											    	
+												    </div>
+												  <button type="button" id="guardar_venta" class="btn btn-success btn-block btn-lg">Registrar</button>
+												</form>
+			
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="detalles">	
+				<div class="titulo">
+					<h3>Agregar productos</h3>
+				</div>
+				<div class="panel panel-default pa">
+					<div class="panel-body">
+
+						<table id="datos" class="table table-hover table-responsive"> 
+						    	<thead> 
+						    		<tr> 
+						    			<th>Producto</th>
+						    			<th>Unidad</th>
+						    			<th>Stock</th>
+						    			<th>Precio</th> 
+						    			<th></th> 
+						    		</tr> 
+						    	</thead> 
+						    	<tbody> 
+						    		<?php echo $datos; ?>
+						    	</tbody> 
+						    </table>
+
+
+						
+					    
+					</div>
+				</div>
+			</div>
+		</div>
+	 	<!-- Tab panes -->
+		
+
+	  
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="/assets/js/jquery-ui.min.js?v=<?= $v ?>"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.5/sweetalert2.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script src="/assets/js/select2.full.min.js?v=<?= $v ?>"></script>
+	<script >
+	// A $( document ).ready() block.
+	$(document ).ready(function() {
+
+	    $('input[name="es_empleado"]').on('change', function() {
+	        var esEmpleado = $('input[name="es_empleado"]:checked').val() === '1';
+	        $('#bloque-cliente').toggle(!esEmpleado);
+	        $('#bloque-empleado').toggle(esEmpleado);
+	        if (!esEmpleado) { $('#cliente').val(''); $('#cliente_id').val(''); $('#dni_cliente').val(''); $('#dni_estado').html(''); $('#id_empleado').val(''); }
+	    });
+
+	    // El nombre del cliente en el recibo debe ser el del empleado, aunque el campo
+	    // #cliente esté oculto (el backend sigue usando 'cliente' para buscar/crear el registro).
+	    $('#id_empleado').on('change', function() {
+	        $('#cliente').val($(this).find('option:selected').text().trim().toUpperCase());
+	    });
+
+	    $( "#cliente" ).autocomplete({
+	      source: function(request, response) {
+	          $.ajax({
+	              url: '/inc/autocomplete-cliente.php',
+	              data: { term: request.term },
+	              dataType: 'json',
+	              success: function(data) { response(data); }
+	          });
+	      },
+	      minLength: 2,
+	      select: function(event, ui) { $('#cliente_id').val(ui.item.id || ''); }
+	    });
+	    // Si el cajero edita el nombre a mano, ya no es el cliente elegido del desplegable.
+	    $('#cliente').on('input', function() { $('#cliente_id').val(''); $('#corregir_dni').val('0'); $('#actualizar_nombre').val('0'); });
+
+	    // ---- DNI opcional: busca cliente existente o consulta Migo; nunca bloquea la venta.
+	    var dniPendiente = null, oficialMigo = '';
+	    function dniMsg(html, cls) { $('#dni_estado').attr('class', cls || 'text-muted').html(html); }
+	    function esc(s) { return $('<div>').text(s).html(); }
+	    $('#dni_cliente').on('input', function() {
+	        var v = this.value.replace(/\D+/g, '');
+	        if (v !== this.value) this.value = v;
+	        $('#corregir_dni').val('0'); $('#actualizar_nombre').val('0');
+	        if (dniPendiente) { dniPendiente.abort(); dniPendiente = null; }
+	        if (v.length !== 8) { dniMsg(''); return; }
+	        dniMsg('Buscando...');
+	        dniPendiente = $.ajax({
+	            type: 'POST', dataType: 'json', url: '/inc/buscar_cliente_dni.php', data: { dni: v }, timeout: 8000,
+	            success: function(d) {
+	                dniPendiente = null;
+	                if (d.estado === 'local') {
+	                    $('#cliente_id').val(d.cliente.id);
+	                    if (d.nombre_oficial) {
+	                        $('#cliente').val(d.nombre_oficial); $('#actualizar_nombre').val('1');
+	                        dniMsg('✓ Cliente registrado: ' + esc(d.cliente.nombre) + '<br>Nombre se actualizará a <b>' + esc(d.nombre_oficial) + '</b> &middot; <a href="#" class="dni-mantener" data-nombre="' + esc(d.cliente.nombre) + '">mantener el actual</a>', 'text-success');
+	                    } else {
+	                        $('#cliente').val(d.cliente.nombre);
+	                        dniMsg('✓ Cliente registrado: ' + esc(d.cliente.nombre), 'text-success');
+	                    }
+	                } else if (d.estado === 'api') {
+	                    oficialMigo = d.nombre;
+	                    var html = 'Migo: <b>' + esc(d.nombre) + '</b>';
+	                    if (d.candidatos && d.candidatos.length) {
+	                        html += ' &middot; ¿es alguno?';
+	                        $.each(d.candidatos, function(i, c) {
+	                            var dist = c.doc ? ' &middot; DNI ' + esc(c.doc) + ' (se corregirá)' : '';
+	                            html += '<br><a href="#" class="dni-usar" data-id="' + c.id + '" data-nombre="' + esc(c.nombre) + '" data-doc="' + esc(c.doc || '') + '">' + esc(c.nombre) + '</a> <span class="text-muted">' + c.ventas + ' ventas' + dist + '</span>';
+	                        });
+	                        html += '<br><a href="#" class="dni-nuevo" data-nombre="' + esc(d.nombre) + '">Ninguno, usar este nombre</a>';
+	                        dniMsg(html, 'text-info');
+	                    } else {
+	                        $('#cliente').val(d.nombre); $('#cliente_id').val('');
+	                        dniMsg('✓ ' + esc(d.nombre), 'text-success');
+	                    }
+	                } else {
+	                    dniMsg(esc(d.mensaje || 'No se pudo consultar el DNI. Puedes continuar sin él.'), 'text-warning');
+	                }
+	            },
+	            error: function(xhr, st) { dniPendiente = null; if (st !== 'abort') dniMsg('No se pudo consultar el DNI. Puedes continuar sin él.', 'text-warning'); }
+	        });
+	    });
+	    $('#dni_estado').on('click', '.dni-usar', function(e) {
+	        e.preventDefault();
+	        // Se vincula al cliente existente y su nombre pasa al nombre completo de Migo.
+	        $('#cliente').val(oficialMigo || $(this).data('nombre')); $('#cliente_id').val($(this).data('id'));
+	        $('#corregir_dni').val($(this).data('doc') ? '1' : '0');
+	        $('#actualizar_nombre').val(oficialMigo ? '1' : '0');
+	        dniMsg('✓ ' + esc($(this).data('nombre')) + ' &middot; nombre se actualizará a <b>' + esc(oficialMigo) + '</b>' + ($(this).data('doc') ? ' &middot; DNI se corregirá' : ' &middot; se agregará el DNI') + ' &middot; <a href="#" class="dni-mantener" data-nombre="' + esc($(this).data('nombre')) + '">mantener nombre</a>', 'text-success');
+	    });
+	    $('#dni_estado').on('click', '.dni-mantener', function(e) {
+	        e.preventDefault();
+	        $('#cliente').val($(this).data('nombre')); $('#actualizar_nombre').val('0');
+	        dniMsg('✓ Se mantiene el nombre ' + esc($(this).data('nombre')), 'text-success');
+	    });
+	    $('#dni_estado').on('click', '.dni-nuevo', function(e) {
+	        e.preventDefault();
+	        $('#cliente').val($(this).data('nombre')); $('#cliente_id').val(''); $('#corregir_dni').val('0');
+	        dniMsg('✓ ' + esc($(this).data('nombre')), 'text-success');
+	    });
+
+		$('#add').click(function() {
+				$('#variantes').find('tbody').append('<tr><td><input type="text" name="variante[]" ></td><td><input type="text" name="variante[]" ></td><td><input type="text" name="variante[]" ></td></tr>')
+		    });
+
+
+		$('#select_p').select2();
+		$('#id_empleado').select2({ placeholder: '-- elegir --', width: '100%' });
+
+		$('body').on('change', '#select_p', function(){
+			var demo = $(this).val();
+			
+			var porciones = demo.split('-');
+			$("#canti_variante").val(porciones[1]);
+			$('#variantes').find('tbody').append('<tr><td><input type="text" name="variante[]" ></td><td><input type="text" name="variante[]" ></td><td><input type="text" name="variante[]" ></td></tr>')
+
+		});
+
+		$.extend( true, $.fn.dataTable.defaults, {
+		    "language": {
+		        "decimal": ",",
+		        "thousands": ".",
+		        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		        "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+		        "infoPostFix": "",
+		        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+		        "loadingRecords": "Cargando...",
+		        "lengthMenu": "Mostrar _MENU_ registros",
+		        "paginate": {
+		            "first": "Primero",
+		            "last": "Último",
+		            "next": "Siguiente",
+		            "previous": "Anterior"
+		        },
+		        "processing": "Procesando...",
+		        "search": "Buscar:",
+		        "searchPlaceholder": "Término de búsqueda",
+		        "zeroRecords": "No se encontraron resultados",
+		        "emptyTable": "Ningún dato disponible en esta tabla",
+		        "aria": {
+		            "sortAscending":  ": Activar para ordenar la columna de manera ascendente",
+		            "sortDescending": ": Activar para ordenar la columna de manera descendente"
+		        },
+		        //only works for built-in buttons, not for custom buttons
+		        "buttons": {
+		            "create": "Nuevo",
+		            "edit": "Cambiar",
+		            "remove": "Borrar",
+		            "copy": "Copiar",
+		            "csv": "fichero CSV",
+		            "excel": "tabla Excel",
+		            "pdf": "documento PDF",
+		            "print": "Imprimir",
+		            "colvis": "Visibilidad columnas",
+		            "collection": "Colección",
+		            "upload": "Seleccione fichero...."
+		        },
+		        "select": {
+		            "rows": {
+		                _: '%d filas seleccionadas',
+		                0: 'clic fila para seleccionar',
+		                1: 'una fila seleccionada'
+		            }
+		        }
+		    }           
+		} );     
+
+		//$('#datos').DataTable();
+		var tabla = $('#datos').DataTable({
+    "order": [[0, 'asc']]
+});
+
+// Búsqueda con ordenamiento por relevancia
+$('div.dataTables_filter input').on('keyup', function() {
+    var searchTerm = this.value.toLowerCase().trim();
+    
+    if (searchTerm.length > 0) {
+        // Crear un array para ordenar por relevancia
+        var rowsWithScore = [];
+        
+        tabla.rows({ search: 'applied' }).every(function(rowIdx) {
+            var data = this.data();
+            var producto = $(data[0]).text() || data[0]; // Obtener texto del producto
+            producto = producto.toLowerCase();
+            
+            var score = 100; // Score por defecto (baja relevancia)
+            
+            // Si el producto contiene EXACTAMENTE el término buscado
+            if (producto.indexOf(searchTerm) !== -1) {
+                // Mientras más cerca del inicio, mejor score
+                score = producto.indexOf(searchTerm);
+            }
+            
+            // Bonus: si las palabras coinciden mejor (ej: "2 oz" vs "2" en otro contexto)
+            var searchWords = searchTerm.split(' ');
+            var matchCount = 0;
+            searchWords.forEach(function(word) {
+                if (word.length > 0 && producto.indexOf(word) !== -1) {
+                    matchCount++;
+                }
+            });
+            
+            // Si coinciden todas las palabras buscadas, dar mejor score
+            if (matchCount === searchWords.length) {
+                score = score - 50;
+            }
+            
+            rowsWithScore.push({
+                row: this.node(),
+                score: score,
+                producto: producto
+            });
+        });
+        
+        // Ordenar por score (menor = más relevante)
+        rowsWithScore.sort(function(a, b) {
+            return a.score - b.score;
+        });
+        
+        // Reordenar las filas en el DOM
+        var tbody = $('#datos tbody');
+        rowsWithScore.forEach(function(item) {
+            tbody.append(item.row);
+        });
+    }
+});
+
+
+		var total = 0;
+
+		$('#datos').on('click', '#agregar', function(){
+			var cantidad_vp = $(this).closest('tr').find('.cantidad_vp').val();
+			var id_vp = $(this).closest('tr').find('.id_vp').val();
+		    var nombre = $(this).closest('tr').find('.nom_prod').text();
+		    var precio = $(this).closest('tr').find('.precio_venta').val();
+		    var fv = $(this).closest('tr').find('.fv').text();
+		    var unidad = $(this).closest('tr').find('.unidad').text();
+		    var stock = $(this).closest('tr').find('.stock').text();
+		    var stock_units = parseFloat(stock) * parseFloat(cantidad_vp);
+		    var cantidad = 1;
+		    var id_p = $(this).val();
+		    var monto = precio*cantidad_vp;
+			var monto1 = Number(monto.toFixed(2));
+
+
+
+		    //alert(cantidad_vp);
+		    console.log(stock);
+		    if (stock <=0) {
+		    	swal('Advertencia','No puedes agregar, no tienes stock.','warning');
+		    	
+		    }
+		    else{
+		    	$('input[type=search]').val('');
+		    	total = monto*1 + total*1;
+		    	total1 = Number(total.toFixed(2));
+
+		    	$('#items tr:last').after('<tr class="child"><input type="hidden" class="id_vp" value="'+id_vp+'" name="id_vp[]" ><input type="hidden" class="stocki" value="'+stock_units+'" name="stock[]" ><input type="hidden" value="'+id_p+'" name="id_pro[]" ><td><input class="cantidad" type="number" max="'+stock_units+'" value="'+cantidad_vp+'" name="cantidad[]"></td><td style="text-transform:uppercase;">'+nombre+'</td><td style="text-transform:uppercase;">'+unidad+'</td><td><input type="number" class="pre" value="'+precio+'" name="precio[]"></td><td ><input class="mon" type="text" value="'+monto1+'" name="total_pre[]" ></td><td><button value="'+monto+'" class="borrar">x</button></td></tr>');
+		    	$("#total").val(total);
+		    	$("#total1").val(total1);
+
+		    }
+
+
+		});
+	    //borrar item
+	    $("#items").on('click', '.borrar', function () {
+		    //$(this).closest('tr').remove();
+		    
+		    var resta = $(this).val();
+		    console.log(resta)
+		    $(this).parents("tr").remove();
+		    total = (total - resta*1);
+		    total1 = Number(total.toFixed(2));
+
+
+		    $("#total").val(total);
+		    $("#total1").val(total1);
+
+		});
+		//actualizar item
+		var monto1 = 0;
+		$('body').on('change paste keyup',".cantidad", function(){
+			var stock = $(this).closest('tr').find('.stocki').val();
+			var cantidad = $(this).closest('tr').find('.cantidad').val();
+			console.log(stock);
+			console.log(cantidad);
+
+			// Validar que no supere el stock disponible
+			if (parseFloat(cantidad) > parseFloat(stock)) {
+				$(this).val(stock);
+				cantidad = stock;
+				swal('Advertencia', 'La cantidad no puede superar el stock disponible (' + stock + ').', 'warning');
+			}
+
+			var anterior = $(this).closest('tr').find('.mon').val();
+			var precio = $(this).closest('tr').find('.pre').val();
+			
+			var monto1 =  precio*cantidad;
+			var monto2 =  Number(monto1.toFixed(2));
+
+			total = (total - anterior + monto1);
+			total1 = total.toFixed(2);
+
+			monto1 = monto1;
+			$("#total").val(total);
+			$("#total1").val(total1);
+			
+			$(this).closest('tr').find('.mon').val(monto2);
+			$(this).closest('tr').find('.borrar').val(monto1);
+		});
+
+		$('body').on('change paste keyup',".pre", function(){
+			var anterior = $(this).closest('tr').find('.mon').val();
+			var precio = $(this).closest('tr').find('.pre').val();
+			var cantidad = $(this).closest('tr').find('.cantidad').val();
+			var monto1 =  precio*cantidad;
+
+			total = (total - anterior + monto1);  // Corregido: sin redondear
+			total1 = total.toFixed(2);  // Corregido: ahora sí actualiza total1
+			$("#total").val(total);
+			$("#total1").val(total1);  // Corregido: ahora sí actualiza el campo ok
+			
+			monto1 = monto1.toFixed(2);
+			$(this).closest('tr').find('.mon').val(monto1);
+			$(this).closest('tr').find('.borrar').val(monto1);
+		});
+
+
+	   		//autocompletamos el producto
+		    $('#basics').autocomplete({
+		      	source: function(request,response){
+					var str = 'term='+request.term;
+					//alert('entro');
+					$.ajax({
+							type:'GET',
+							dataType: 'json',
+							url: '/inc/autocomplete-producto.php',
+							data: str,
+							success: function(data){
+								response(data);
+								//$("#precio").val('12');
+							}
+					});
+				}
+				//minLength: 2
+		    });
+
+		    //obtenemos el precio
+		    $('#basics').on('change paste keyup', function(){
+		    	var str1 = 'producto='+$('#basics').val();
+		    	//alert (str1);
+		    	$.ajax({	
+			    	type:'GET',
+					dataType: 'json',
+				  	url: '/inc/autocomplete-precio.php',
+				  	data: str1,
+				  	success: function(response) {
+				   	 	$('#precio').val(response.precio);
+				   	 	$('#id_p').val(response.id_p);
+				   	 	
+				  	}
+				});
+			});
+		$('body').on('click',"#guardar_venta", function(e){
+          e.preventDefault();
+
+				if ($('input[name="es_empleado"]:checked').val() === '1' && !$('#id_empleado').val()) {
+					swal('Advertencia', 'Selecciona el empleado', 'warning');
+					return;
+				}
+
+				// Validar que ninguna cantidad supere el stock antes de guardar
+				var errorStock = false;
+				$('#items tr.child').each(function(){
+					var stocki = parseFloat($(this).find('.stocki').val()) || 0;
+					var cantidad = parseFloat($(this).find('.cantidad').val()) || 0;
+					if (cantidad > stocki) {
+						errorStock = true;
+						$(this).find('.cantidad').css('border', '2px solid red');
+					} else {
+						$(this).find('.cantidad').css('border', '');
+					}
+				});
+				if (errorStock) {
+					swal('Advertencia', 'Una o más cantidades superan el stock disponible. Corrígelas antes de guardar.', 'warning');
+					return;
+				}
+
+				var str2 = $('#venta').serialize();
+
+				var btn_guardar = this;
+				$.ajax({
+					cache: false,
+					type: "POST",
+					dataType: "json",
+					url: "/inc/registrar_venta.php",
+					data: str2,
+					success: function(response){
+
+						if(response.respuesta == false){
+							// Quitar resaltado previo
+							$('#items tr.child .cantidad').css('border', '');
+							// Resaltar la fila del producto con error
+							if (response.error_producto_id) {
+								$('#items tr.child').each(function(){
+									if ($(this).find('input[name="id_pro[]"]').val() == response.error_producto_id) {
+										$(this).find('.cantidad').css('border', '2px solid red');
+									}
+								});
+							}
+							swal('Sin stock', response.mensaje, 'warning');
+						}else{
+							$(btn_guardar).hide();
+							document.location.href = "ver_venta.php?id="+response.venta_id;
+						}
+					
+					},
+					error: function(){
+						swal('Advertencia','Error General del Sistema','warning');
+					}
+				});
+
+				//return false;
+
+
+		});
+
+		
+	    console.log( "ready!" );
+	});
+		
+	</script>
+</body>
+</html>

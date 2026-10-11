@@ -1,0 +1,380 @@
+<?php
+include('inc/control.php');
+if ($_SESSION['type']=='operador') {
+	header("Location: dashboard.php");
+}
+
+include('inc/sdba/sdba.php'); // include main file
+$ventas = Sdba::table('proveedores');
+$ventas->where('estado !=', '0');
+$ventas_list = $ventas->get();
+
+$datos = '';
+$i = 1;
+foreach ($ventas_list as $value) {
+
+	$datos .='<tr><td>'.$value['id_proveedor'].'</td>
+				<td id ="'.$value['doc_identidad'].'" class="doc">'.$value['doc_identidad'].'</td>
+    			<td id ="'.$value['proveedor'].'" class="proveedor">'.$value['proveedor'].'</td>
+    			<td id ="'.$value['direccion'].'" class="direccion">'.$value['direccion'].'</td>
+    			<td id ="'.$value['telefono'].'" class="telefono">'.$value['telefono'].'</td>
+    			<td id ="'.$value['email'].'" class="email">'.$value['email'].'</td>
+    			<td>
+    				<button class="editar_c btn-custom" alt="editar" value="'.$value['id_proveedor'].'"><img src="assets/img/edit.png"/></button>
+    				<button class="borrar_prov btn-custom" alt="borrar" value="'.$value['id_proveedor'].'"><img src="assets/img/trash.png"/></button>
+    			</td>
+    		  </tr>';
+    $i++;
+}
+
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Sistema - Menu Principal</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.5.0/sweetalert2.min.css" integrity="sha512-YpZXdiMhuP3woCdvg0ou2UPj6l4KQUuf3gbMXTNMgtqTakMInX7h+64CTh+UIvYdA7ctBU2BAA/h4eEhoMEmsg==" crossorigin="anonymous" />
+    </head>
+
+<body class="mobile dashboard">
+	<div class="">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
+	        </div>
+	        <?php menu('6'); ?>
+	      </div>
+	      <div class="submenu">
+	      	<ul class="subtop-tabs">
+	      		<li>
+	      			<a href="compra.php">Registrar Compra</a>
+	      		</li>
+	      		<li >
+	      			<a href="compras.php">Listar Compras</a>
+	      		</li>
+	      		<li class="active">
+	      			<a href="proveedores.php">Proveedores</a>
+	      		</li>
+	      		<li>
+	      			<a href="cuentas_x_pagar.php">Cuentas x pagar</a>
+	      		</li>
+	      	</ul>
+	      </div>
+	    </nav>
+		<div class="kbg">
+			<div class="cuerpo">
+				<div class="titulo">
+					<div class="row">
+						<div class="col-xs-9">
+							<h3>Proveedores</h3>
+						</div>
+						<div class="col-xs-3">
+							<button id="addnew" style="margin-top:6px;" class="btn btn-success">+ Agregar proveedor</button>
+						</div>
+					</div>
+					
+				</div>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="kdashboard">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="panel panel-default pa">
+											<div class="panel-body">
+											    <table id="datos" class="table table-hover"> 
+											    	<thead> 
+											    		<tr>  
+											    			<th>Id</th> 
+											    			<th>Documento</th>
+											    			<th>Proveedor</th>
+											    			<th>Dirección</th>
+											    			<th>Telefono</th>
+											    			<th>Email</th>
+											    			<th></th>
+											    		</tr> 
+											    	</thead> 
+											    	<tbody> 
+											    		<?php echo $datos; ?>
+											    	</tbody> 
+											    </table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="detalles">
+				<div class="titulo-n">
+					<h3 id="tituc">Nuevo proveedor</h3>
+				</div>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xs-12">
+							<form>
+								<div class="form-group">
+								    <label for="exampleInputEmail1">Ruc</label>
+								    <input class="form-control" type="text" name='ruc' id="ruc"><br>
+								    <input type="hidden" id="id" name="id">
+								</div>
+								<div class="form-group">
+								    <label for="exampleInputEmail1">Denominación</label>
+								    <input class="form-control" type="text" name='denominacion' id="denominacion"><br>
+								</div>
+								<div class="form-group">
+								    <label for="exampleInputEmail1">Dirección</label>
+								    <textarea class="form-control" name='direccion' id="direccion"></textarea>
+								</div>
+								<div class="form-group">
+								    <label for="exampleInputEmail1">Celular</label>
+								    <input type="text" class="form-control" name='celular' id="celular">
+								</div>
+								<div class="form-group">
+								    <label for="exampleInputEmail1">Email</label>
+								    <input type="text" class="form-control" name='email' id="email">
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<button class="btn btn-black btn-block" type="button">Cancelar</button>
+									</div>
+									<div class="col-xs-6">
+										<button id="guardar_cate" class="btn btn-success btn-block" type="button" value="nuevo">Guardar</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	 	<!-- Tab panes -->
+		
+
+	  
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.5.0/sweetalert2.min.js" integrity="sha512-V9JHp52ZkrbVVjJqNz/XXYMUOyUfzaGKEGrcD2Ual7n39+UR1yJK0numAHZqkhhGTAH/Klj0KUe4btAZXccw9w==" crossorigin="anonymous"></script>
+	<script >
+	// A $( document ).ready() block.
+	$(document ).ready(function() {
+		$.extend( true, $.fn.dataTable.defaults, {
+		    "language": {
+		        "decimal": ",",
+		        "thousands": ".",
+		        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		        "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+		        "infoPostFix": "",
+		        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+		        "loadingRecords": "Cargando...",
+		        "lengthMenu": "Mostrar _MENU_ registros",
+		        "paginate": {
+		            "first": "Primero",
+		            "last": "Último",
+		            "next": "Siguiente",
+		            "previous": "Anterior"
+		        },
+		        "processing": "Procesando...",
+		        "search": "Buscar:",
+		        "searchPlaceholder": "Término de búsqueda",
+		        "zeroRecords": "No se encontraron resultados",
+		        "emptyTable": "Ningún dato disponible en esta tabla",
+		        "aria": {
+		            "sortAscending":  ": Activar para ordenar la columna de manera ascendente",
+		            "sortDescending": ": Activar para ordenar la columna de manera descendente"
+		        },
+		        //only works for built-in buttons, not for custom buttons
+		        "buttons": {
+		            "create": "Nuevo",
+		            "edit": "Cambiar",
+		            "remove": "Borrar",
+		            "copy": "Copiar",
+		            "csv": "fichero CSV",
+		            "excel": "tabla Excel",
+		            "pdf": "documento PDF",
+		            "print": "Imprimir",
+		            "colvis": "Visibilidad columnas",
+		            "collection": "Colección",
+		            "upload": "Seleccione fichero...."
+		        },
+		        "select": {
+		            "rows": {
+		                _: '%d filas seleccionadas',
+		                0: 'clic fila para seleccionar',
+		                1: 'una fila seleccionada'
+		            }
+		        }
+		    }           
+		} );     
+
+		var table1 = $('#datos').DataTable();	
+	    console.log( "ready!" );
+
+	    $('body').on('click',"#guardar_cate", function() {
+	    	var $btn = $(this);
+	    	if ($btn.prop('disabled')) return; // evita doble/triple envío si hacen varios clics seguidos
+
+	    	var ruc = $('#ruc').val();
+	    	var denominacion = $('#denominacion').val();
+	    	var direccion = $('#direccion').val();
+	    	var telefono = $('#celular').val();
+	    	var email = $('#email').val();
+	    	var opcion = $btn.val();
+	    	var id_ca = $('#id').val();
+	    	var str1 = 'ruc=' + ruc +'&denominacion=' + denominacion + '&direccion=' + direccion +'&accion=' + opcion+'&id=' + id_ca+'&telefono=' + telefono+'&email=' + email;
+
+	    	$btn.prop('disabled', true);
+		  	$.ajax({
+		    	type: "POST",
+				dataType: 'json',
+			  	url: '/inc/registrar_proveedor.php',
+			  	data: str1,
+			  	success: function(data1) {
+			   	 	if (data1.accion =='nuevo') {
+			   	 		var botones = '<button class="editar_c btn-custom" alt="editar" value="'+data1.id+'"><img src="assets/img/edit.png"/></button> ' +
+				   	 		'<button class="borrar_prov btn-custom" alt="borrar" value="'+data1.id+'"><img src="assets/img/trash.png"/></button>';
+				   	 	table1.rows.add(
+					       [[ data1.id, data1.ruc, data1.denominacion, data1.direccion, telefono, email, botones ]]
+					    ).draw();
+			   	 	}
+			   	 	else{
+			   	 		// Editar cambia varias celdas de la fila a la vez; más simple y confiable
+			   	 		// recargar que ir parcheando celda por celda con la API de DataTables.
+			   	 		document.location.reload();
+			   	 	}
+			  	},
+			  	error: function(){
+						alert('Error general del sistema');
+					},
+			  	complete: function() {
+			  		$btn.prop('disabled', false);
+			  	}
+			});
+	   	});
+
+	   	$('body').on('click',".editar_c", function() {
+	    	var id_proveedor = $(this).val();
+	    	//alert(id_categoria);
+	    	var doc = $(this).closest('tr').find('.doc').text();
+	    	var proveedor = $(this).closest('tr').find('.proveedor').text();
+	    	var direccion = $(this).closest('tr').find('.direccion').text();
+	    	var telefono = $(this).closest('tr').find('.telefono').text();
+	    	var email = $(this).closest('tr').find('.email').text();
+	    	$('#tituc').text('Editar proveedor');
+	    	$('#ruc').val(doc);
+	    	$('#denominacion').val(proveedor);
+	    	$('#direccion').val(direccion);
+	    	$('#celular').val(telefono);
+	    	$('#email').val(email);
+	    	$('#guardar_cate').text('Editar');
+	    	$('#guardar_cate').val('editar');
+	    	$('#id').val(id_proveedor);
+
+
+	   	});
+
+	   	$('body').on('click', ".borrar_prov", function() {
+	   		var $btn = $(this);
+	   		var id = $btn.val();
+	   		var proveedor = $btn.closest('tr').find('.proveedor').text();
+	   		Swal.fire({
+	   			title: 'Eliminar proveedor',
+	   			text: '¿Seguro de eliminar a "' + proveedor + '"? Las compras ya registradas con este proveedor no se ven afectadas.',
+	   			icon: 'warning',
+	   			showCancelButton: true,
+	   			confirmButtonColor: '#3085d6',
+	   			cancelButtonColor: '#d33',
+	   			confirmButtonText: 'Sí, eliminar'
+	   		}).then(function (result) {
+	   			if (!result.isConfirmed) return;
+	   			$.ajax({
+	   				type: 'GET',
+	   				dataType: 'json',
+	   				url: '/inc/borrar_proveedor.php',
+	   				data: 'id=' + id,
+	   				success: function (data1) {
+	   					if (data1.ok) {
+	   						table1.row($btn.closest('tr')).remove().draw();
+	   					} else {
+	   						Swal.fire('Advertencia', data1.mensaje || 'No se pudo eliminar', 'warning');
+	   					}
+	   				},
+	   				error: function () {
+	   					Swal.fire('Advertencia', 'Error general del sistema', 'warning');
+	   				}
+	   			});
+	   		});
+	   	});
+
+	   	$('body').on('click',"#addnew", function() {
+	    	$('#tituc').text('Nuevo proveedor');
+	    	$('#ruc').val("");
+	    	$('#denominacion').val("");
+	    	$('#direccion').val("");
+	    	$('#guardar_cate').text('Guardar');
+	    	$('#guardar_cate').val('nuevo');
+	    	 
+	   	});
+
+	    $('body').on('click',"#borrar", function() {
+			var id = $(this).val();
+			var str1 = 'id=' + id;
+		  	$.ajax({	
+		    	type:'GET',
+				dataType: 'json',
+			  	url: '/inc/borrar_producto.php',
+			  	data: str1,
+			  	success: function(data1) {
+			   	 	console.log('borrado');
+			   	 	document.location.href = "ver_productos.php";
+			   	 	
+			  	}
+			});
+		});
+		$( "#ruc" ).on('change paste keyup', function() {
+			if(this.value.length==11){
+                  var ruc = $(this).val();
+
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("GET", "https://apisunat.harlec.com.pe/api/v1/ruc/" + ruc);
+                  xhr.setRequestHeader("Accept", "application/json");
+                  xhr.setRequestHeader("Authorization", "Bearer 0f9d806a79e9380c946795a33ed530f95fd5cf1142625dd94d557711f7a59bdd");
+                  xhr.send();
+
+                  xhr.onload = function () {
+				    if (xhr.readyState === xhr.DONE) {
+				        if (xhr.status === 200) {
+				        	var data = JSON.parse(xhr.response);
+				            $('#denominacion').val(data.razon_social);
+				            $('#direccion').val(data.direccion);
+				        }
+				    }
+				};
+			}
+
+		});
+	});
+		
+	</script>
+</body>
+</html>

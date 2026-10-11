@@ -1,0 +1,235 @@
+<?php
+include('inc/control.php');
+if ($_SESSION['type'] !== 'admin') { header("Location: dashboard.php"); exit; }
+include('inc/sdba/sdba.php');
+include('inc/config_facturacion.php');
+
+$nubefact_ruta   = get_config('nubefact_ruta');
+$nubefact_token  = get_config('nubefact_token');
+$nubefact_activo = get_config('nubefact_activo', '0');
+$migo_token      = get_config('migo_token');
+$monto_maximo_proforma_diario = get_config('monto_maximo_proforma_diario', '0');
+
+$serie_boleta               = get_config('serie_boleta', 'BV03');
+$serie_factura              = get_config('serie_factura', 'F003');
+$serie_nota_credito_boleta  = get_config('serie_nota_credito_boleta', 'BC03');
+$serie_nota_credito_factura = get_config('serie_nota_credito_factura', 'FC03');
+
+$openai_api_key = get_config('openai_api_key');
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración Facturación Electrónica – Renacer</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="mobile dashboard">
+<div class="">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
+            </div>
+            <?php menu('8'); ?>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top:70px;max-width:900px">
+        <div class="page-header">
+            <h3>
+                <i class="fas fa-file-invoice" style="margin-right:8px"></i>
+                Configuración Facturación Electrónica
+            </h3>
+        </div>
+
+        <div id="alert-area"></div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Nubefact (facturación electrónica SUNAT)</b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>Ruta (URL de la API)</label>
+                    <input type="text" class="form-control" id="nubefact_ruta" value="<?php echo htmlspecialchars($nubefact_ruta); ?>" placeholder="https://api.nubefact.com/api/v1/xxxxxxxx-...">
+                </div>
+                <div class="form-group">
+                    <label>Token</label>
+                    <input type="text" class="form-control" id="nubefact_token" value="<?php echo htmlspecialchars($nubefact_token); ?>">
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="nubefact_activo" <?php echo $nubefact_activo == '1' ? 'checked' : ''; ?>>
+                        Activo
+                    </label>
+                </div>
+                <button class="btn btn-default" id="btn-probar-nubefact"><i class="fas fa-plug"></i> Probar conexión</button>
+                <button class="btn btn-success" id="btn-guardar" style="float:right"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Series de comprobantes</b></div>
+            <div class="panel-body">
+                <p class="help-block">
+                    Serie con la que se emite cada tipo de comprobante. Debe tener 4 caracteres:
+                    empieza con <b>B</b> para boletas y sus notas asociadas, con <b>F</b> para facturas y las suyas.
+                </p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Boleta</label>
+                            <input type="text" class="form-control" id="serie_boleta" maxlength="4" style="text-transform:uppercase" value="<?php echo htmlspecialchars($serie_boleta); ?>">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Factura</label>
+                            <input type="text" class="form-control" id="serie_factura" maxlength="4" style="text-transform:uppercase" value="<?php echo htmlspecialchars($serie_factura); ?>">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Nota de crédito (de boleta)</label>
+                            <input type="text" class="form-control" id="serie_nota_credito_boleta" maxlength="4" style="text-transform:uppercase" value="<?php echo htmlspecialchars($serie_nota_credito_boleta); ?>">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Nota de crédito (de factura)</label>
+                            <input type="text" class="form-control" id="serie_nota_credito_factura" maxlength="4" style="text-transform:uppercase" value="<?php echo htmlspecialchars($serie_nota_credito_factura); ?>">
+                        </div>
+                    </div>
+                </div>
+                <p class="help-block" style="margin-bottom:0">
+                    Antes de emitir, el sistema verifica contra Nubefact que el siguiente correlativo de cada serie
+                    esté realmente libre (no confía solo en su propio contador) — si detecta un desfase, salta
+                    automáticamente al primer número libre y avisa.
+                </p>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Migo (consulta RUC / DNI)</b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>Token</label>
+                    <input type="text" class="form-control" id="migo_token" value="<?php echo htmlspecialchars($migo_token); ?>">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Proformas</b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>Monto máximo acumulado de proformas por día (S/)</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="monto_maximo_proforma_diario" value="<?php echo htmlspecialchars($monto_maximo_proforma_diario); ?>" placeholder="0 = sin límite">
+                    <p class="help-block">La suma de todas las proformas del día no podrá superar este monto. Cada proforma individual ya está limitada a S/ 700.00. Deja en 0 para no aplicar límite acumulado.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Inteligencia Artificial (interpretación de pedidos)</b></div>
+            <div class="panel-body">
+                <p class="help-block">Clave usada por "Tomar pedido con IA" para leer fotos/audios/texto de pedidos de clientes.</p>
+                <div class="form-group">
+                    <label>OpenAI API Key</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="openai_api_key" value="<?php echo htmlspecialchars($openai_api_key); ?>" placeholder="sk-...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default btn-toggle-key" type="button" data-target="#openai_api_key"><i class="fas fa-eye"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <button class="btn btn-success" id="btn-guardar-ia" style="float:right"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Herramientas de prueba (QA)</b></div>
+            <div class="panel-body">
+                <p class="help-block">Genera una proforma con cliente, productos y cantidades al azar para probar las reglas de monto de arriba. Uso exclusivo de ambientes de prueba.</p>
+                <button class="btn btn-warning" id="btn-generar-prueba"><i class="fas fa-random"></i> Generar proforma de prueba</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+function showAlert(msg, type) {
+    $('#alert-area').html(`<div class="alert alert-${type} alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>${msg}</div>`);
+}
+
+$('#btn-probar-nubefact').on('click', function(){
+    var btn = $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Probando...');
+    $.post('/inc/probar_nubefact.php', {
+        ruta: $('#nubefact_ruta').val(),
+        token: $('#nubefact_token').val()
+    }, function(d){
+        showAlert(d.mensaje, d.ok ? 'success' : 'danger');
+    }, 'json').fail(function(xhr){
+        showAlert('Error del servidor: ' + xhr.status, 'danger');
+    }).always(function(){
+        btn.prop('disabled', false).html('<i class="fas fa-plug"></i> Probar conexión');
+    });
+});
+
+function guardarConfiguracion(){
+    $.post('/inc/guardar_config_facturacion.php', {
+        nubefact_ruta: $('#nubefact_ruta').val(),
+        nubefact_token: $('#nubefact_token').val(),
+        nubefact_activo: $('#nubefact_activo').is(':checked') ? '1' : '0',
+        migo_token: $('#migo_token').val(),
+        monto_maximo_proforma_diario: $('#monto_maximo_proforma_diario').val(),
+        serie_boleta: $('#serie_boleta').val(),
+        serie_factura: $('#serie_factura').val(),
+        serie_nota_credito_boleta: $('#serie_nota_credito_boleta').val(),
+        serie_nota_credito_factura: $('#serie_nota_credito_factura').val(),
+        openai_api_key: $('#openai_api_key').val()
+    }, function(d){
+        showAlert(d.ok ? 'Configuración guardada.' : 'Error al guardar.', d.ok ? 'success' : 'danger');
+    }, 'json').fail(function(xhr){
+        showAlert('Error del servidor: ' + xhr.status, 'danger');
+    });
+}
+
+$('#btn-guardar, #btn-guardar-ia').on('click', guardarConfiguracion);
+
+$('.btn-toggle-key').on('click', function(){
+    var $input = $($(this).data('target'));
+    var $icon = $(this).find('i');
+    if ($input.attr('type') === 'password') {
+        $input.attr('type', 'text');
+        $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+        $input.attr('type', 'password');
+        $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    }
+});
+
+$('#btn-generar-prueba').on('click', function(){
+    var btn = $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Generando...');
+    $.post('/inc/generar_proforma_prueba.php', {}, function(d){
+        showAlert(d.mensaje, d.respuesta ? 'success' : 'danger');
+    }, 'json').fail(function(xhr){
+        showAlert('Error del servidor: ' + xhr.status, 'danger');
+    }).always(function(){
+        btn.prop('disabled', false).html('<i class="fas fa-random"></i> Generar proforma de prueba');
+    });
+});
+</script>
+</body>
+</html>
