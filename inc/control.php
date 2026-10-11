@@ -16,6 +16,17 @@ require_once __DIR__ . '/permisos.php';
 requiere_pagina(); // bloquea la página si el rol no tiene permiso sobre su módulo
 
 
+// Fuentes, íconos y estilos del diseño Escritorio v2 (para el <head> de cada pantalla).
+function esc_head() {
+	$css = dirname(__DIR__) . '/assets/css/escritorio.css';
+	$leg = dirname(__DIR__) . '/assets/css/escritorio-legacy.css';
+	echo '<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/assets/css/escritorio.css?v=' . (is_file($css) ? filemtime($css) : 1) . '">
+	<link rel="stylesheet" type="text/css" href="/assets/css/escritorio-legacy.css?v=' . (is_file($leg) ? filemtime($leg) : 1) . '">
+	<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>';
+}
+
 // Código numérico histórico de cada opción del menú -> clave de módulo.
 function menu_clave($i) {
 	$mapa = ['1'=>'dashboard','2'=>'usuarios','3'=>'productos','4'=>'ventas','5'=>'reportes','6'=>'compras',

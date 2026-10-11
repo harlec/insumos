@@ -2,101 +2,76 @@
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
-	<title>Sistema - Renacer</title>
+	<title>Ingresar</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/custom.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/sweetalert.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="assets/css/escritorio.css">
+	<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
-<body class="login">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 col-sm-3"></div>
-			<div class="col-md-4 col-sm-6">
-				<div class="login-content">
-					<div class="cont-logo text-center" >
-						<img class="img-reponsive logo" src="assets/img/harlec-sistema.png">
-						<!-- <h2>Grupo<br><strong>AVASA</strong></h2> -->
-					</div>
-					<form id="login" style="width:85%; margin:0 auto;">
-						<div class="form-group">
-							<input type="text" placeholder="Usuario" class="form-control" name="usuario" id="usuario" required>
-						</div>
-						<div class="form-group">
-							<input type="password" placeholder="clave" class="form-control" name="pass" id="pass" required>
-						</div>
-						<div class="form-group">
-							<button style="width:100%" id="btn-login" data-loading-text="Ingresando..." class="btn btn-lg btn-pri">Ingresar</button>
-						</div>
-					</form>
-				</div>
-				
+<body class="esc-login">
+	<div class="lg-bar"></div>
+	<main class="lg-wrap">
+		<div class="lg-card">
+			<div class="lg-brand"><span>GRUPO</span><b>AVASA</b></div>
+			<div class="lg-head">
+				<h1>Bienvenido</h1>
+				<p>Ingresa con tu usuario para continuar</p>
 			</div>
-			<div class="col-md-4 col-sm-3"></div>
+			<form id="login" class="lg-form" novalidate>
+				<div class="lg-error" id="lg-error" role="alert" hidden><i class="ph-fill ph-warning-circle" style="font-size:16px;margin-top:1px"></i><span></span></div>
+				<div class="lg-field">
+					<label for="usuario">Usuario</label>
+					<div class="lg-input"><i class="ph ph-user"></i><input type="text" name="usuario" id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" autofocus required></div>
+				</div>
+				<div class="lg-field">
+					<label for="pass">Clave</label>
+					<div class="lg-input"><i class="ph ph-lock-simple"></i><input type="password" name="pass" id="pass" autocomplete="current-password" required>
+						<button type="button" class="lg-eye" id="lg-eye" aria-label="Mostrar clave"><i class="ph ph-eye"></i></button></div>
+				</div>
+				<button type="submit" id="btn-login" class="lg-btn"><span>Ingresar</span></button>
+			</form>
+			<div class="lg-foot">Sistema de gestión y ventas</div>
 		</div>
-	</div>
-	
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	</main>
 
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/jquery.validate.min.js"></script>
-	<script src="assets/js/sweetalert.min.js"></script>
-	<script >
-		//$("#login").validate();
-		$(document).ready(function() {
-			$("#login").validate({
-				submitHandler: function(){
+	<script>
+	(function () {
+		var form = document.getElementById('login'), btn = document.getElementById('btn-login'),
+		    err = document.getElementById('lg-error'), pass = document.getElementById('pass'),
+		    eye = document.getElementById('lg-eye');
 
-					var str = $('#login').serialize();
-					
-					$.ajax({
-						beforeSend:function(){
-							$('#loader').show()
-						},
-						cache: false,
-						type: 'POST',
-						dataType: 'json',
-						url: '/inc/loginJs.php',
-						data: str,
-						success: function(response){
-							var $btn = $('#btn-login').button('loading');
+		function mostrarError(msg) { err.querySelector('span').textContent = msg; err.hidden = false; }
+		function cargando(on) { btn.disabled = on; btn.firstElementChild.textContent = on ? 'Ingresando…' : 'Ingresar'; }
 
-							// swal(
-							//   'Excelente!',
-							//   response.mensaje,
-							//   'success'
-							// );
-
-							if(response.respuesta == false){
-								$btn.button('reset');
-								swal('Advertencia',response.mensaje,'warning');
-								$('#loader').hide();
-							}else{
-
-								//swal('Excelente!',response.mensaje,'success');
-
-								document.location.href = response.redirect || 'dashboard.php';
-
-							}
-							
-						},
-						error: function(){
-							swal('Advertencia','Error General del Sistema','warning');
-						}
-
-					});
-
-					return false;
-
-				},
-				errorPlacement: function(){
-
-				}
-			});
-		    console.log( "ready!" );
+		eye.addEventListener('click', function () {
+			var ver = pass.type === 'password';
+			pass.type = ver ? 'text' : 'password';
+			eye.firstElementChild.className = 'ph ' + (ver ? 'ph-eye-slash' : 'ph-eye');
+			eye.setAttribute('aria-label', ver ? 'Ocultar clave' : 'Mostrar clave');
 		});
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			err.hidden = true;
+			if (!form.usuario.value.trim() || !pass.value) { mostrarError('Escribe tu usuario y tu clave.'); return; }
+			cargando(true);
+			fetch('/inc/loginJs.php', {
+				method: 'POST',
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
+				credentials: 'same-origin',
+				body: new FormData(form)
+			})
+			.then(function (r) { return r.json(); })
+			.then(function (j) {
+				if (j.respuesta) { document.location.href = j.redirect || 'dashboard.php'; return; }
+				mostrarError(j.mensaje || 'No puede ingresar');
+				cargando(false); pass.select();
+			})
+			.catch(function () { mostrarError('No se pudo conectar con el sistema. Inténtalo de nuevo.'); cargando(false); });
+		});
+	})();
 	</script>
 </body>
 </html>

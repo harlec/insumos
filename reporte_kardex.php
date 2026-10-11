@@ -22,23 +22,13 @@ foreach ($productlist as $value) {
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/select2.min.css">
-    </head>
+    <?php esc_head(); ?>
+</head>
 
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
 	<div class="">
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-	      <div class="">
-	        <div class="navbar-header">
-	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-	        </div>
-	        <?php menu('5'); ?>
-	      </div>
+		<?php menu_v2('5'); ?>
+		<nav class="esc-subnav">
 	      <div class="submenu">
 	      	<ul class="subtop-tabs">
 	      		<li >

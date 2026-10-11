@@ -41,21 +41,12 @@ $conn_cargos->close();
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<?php esc_head(); ?>
 </head>
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
 <div class="">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-            </div>
-            <?php menu('2'); ?>
-        </div>
+    <?php menu_v2('2'); ?>
+		<nav class="esc-subnav">
         <div class="submenu">
             <ul class="subtop-tabs">
                 <li><a class="" href="agregar_usuario.php">Registrar usuario</a></li>

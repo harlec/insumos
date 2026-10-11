@@ -7,8 +7,7 @@ include('inc/sdba/sdba.php');
 // Obtener logs de auditoría
 $logs = Sdba::table('log_ediciones');
 $logs->order_by('fecha_edicion', 'desc');
-$logs->limit(100); // Mostrar solo los últimos 100 registros
-$logs_list = $logs->get();
+$logs_list = $logs->get(100); // Mostrar solo los últimos 100 registros
 
 $datos = '';
 $i = 1;
@@ -51,23 +50,13 @@ foreach ($logs_list as $log) {
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.5.0/sweetalert2.min.css">
+<?php esc_head(); ?>
 </head>
 
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
     <div class="">
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-          <div class="">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-            </div>
-            <?php menu('4'); ?>
-          </div>
+        <?php menu_v2('4'); ?>
+		<nav class="esc-subnav">
         </nav>
         
         <div class="kbg">

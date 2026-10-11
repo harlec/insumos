@@ -190,21 +190,11 @@ include('inc/control.php');
     .btn-cobrar:disabled { background:#ddd; color:#999; }
     .btn-cerrar { position:absolute; top:14px; right:18px; font-size:22px; color:#aaa; background:none; border:none; }
 </style>
+<?php esc_head(); ?>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-            </div>
-            <?php menu('9'); ?>
-        </div>
+<body class="esc esc-legacy">
+    <?php menu_v2('9'); ?>
+		<nav class="esc-subnav">
     </nav>
 
 <div class="caja-wrap" style="margin-top:70px">

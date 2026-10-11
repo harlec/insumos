@@ -1,0 +1,118 @@
+/* Escritorio v2 aplicado a las pantallas clásicas (Bootstrap 3 + DataTables).
+   Solo actúa dentro de body.esc-legacy; no cambia ids ni clases que usa el JavaScript. */
+
+/* ── Estructura: sin posiciones absolutas ── */
+.esc-legacy{padding-top:0!important}
+.esc-legacy>div:first-child{min-height:0}
+.esc-legacy .kbg,.esc-legacy.dashboard .kbg{margin:0 auto!important;position:static!important;width:auto;max-width:1600px;padding:8px 24px 48px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.esc-legacy .cuerpo{position:static;width:auto;flex:999 1 520px;min-width:0;border:0;overflow:visible}
+.esc-legacy .detalles{position:static;width:auto;flex:1 1 460px;min-width:0}
+.esc-legacy .detalles::after{display:none}
+.esc-legacy .cuerpofull{position:static;width:100%;overflow:visible}
+.esc-legacy .container-fluid{padding-left:0;padding-right:0}
+.esc-legacy .kdashboard{padding:0;border-radius:0}
+
+/* ── Pestañas del módulo (antes barra gris oscura) ── */
+.esc-legacy .esc-subnav{background:#fff;border-bottom:1px solid var(--border);margin:0}
+.esc-legacy .submenu{background:transparent;min-height:0;max-width:1600px;margin:0 auto;padding:0 18px}
+.esc-legacy .subtop-tabs{float:none;margin:0;padding:0;overflow-x:auto;scrollbar-width:none}
+.esc-legacy .subtop-tabs::-webkit-scrollbar{display:none}
+.esc-legacy .subtop-tabs>li{float:none;margin:0 2px;line-height:1.2}
+.esc-legacy .subtop-tabs>li>a{color:var(--muted)!important;padding:12px 14px 10px;font-size:13.5px;border-bottom:2px solid transparent;background:transparent!important;border-radius:0;font-weight:500}
+.esc-legacy .subtop-tabs>li>a:hover{color:var(--ink)!important}
+.esc-legacy .subtop-tabs>li.active>a{color:var(--ink)!important;font-weight:600;border-bottom-color:var(--primary)}
+
+/* ── Título de pantalla ── */
+.esc-legacy .titulo,.esc-legacy .titulo-n{background:transparent;color:var(--ink)}
+.esc-legacy .titulo h3,.esc-legacy .titulo-n h3,.esc-legacy .titulo span{margin:0;padding:12px 2px 12px;font-size:22px;font-weight:600;text-transform:none;letter-spacing:0}
+
+/* ── Tarjetas ── */
+.esc-legacy .panel,.esc-legacy .panel-default,.esc-legacy .pa,.esc-legacy .well{background:#fff;border:1px solid var(--border);border-radius:var(--radius-card);box-shadow:none;margin-bottom:16px}
+.esc-legacy .panel-body{padding:16px 20px}
+.esc-legacy .panel-heading{background:#fbf9f7!important;border-bottom:1px solid var(--border)!important;color:var(--ink)!important;border-radius:var(--radius-card) var(--radius-card) 0 0;font-weight:600}
+.esc-legacy .panel-heading span{color:var(--ink)}
+.esc-legacy hr{border-top-color:var(--border)}
+
+/* ── Botones ── */
+.esc-legacy .btn{border-radius:10px;font-family:inherit;font-weight:600;box-shadow:none!important;text-shadow:none}
+.esc-legacy .btn-success,.esc-legacy .btn-primary,.esc-legacy .btn-warning,.esc-legacy .btn-pri,.esc-legacy .btn-co,.esc-legacy .btn-ag,.esc-legacy .dt-buttons .dt-button{background:var(--primary)!important;border:1px solid var(--primary)!important;color:#fff!important}
+.esc-legacy .btn-success:hover,.esc-legacy .btn-primary:hover,.esc-legacy .btn-warning:hover,.esc-legacy .btn-pri:hover,.esc-legacy .dt-buttons .dt-button:hover{background:oklch(0.58 0.19 37)!important;border-color:oklch(0.58 0.19 37)!important}
+.esc-legacy .btn-danger{background:var(--danger-strong)!important;border:1px solid var(--danger-strong)!important;color:#fff!important}
+.esc-legacy .btn-danger:hover{background:var(--danger)!important}
+.esc-legacy .btn-default,.esc-legacy .btn-black{background:#fff;border:1px solid var(--border-strong);color:var(--ink)}
+.esc-legacy .btn-default:hover,.esc-legacy .btn-black:hover{background:var(--soft);color:var(--ink);border-color:var(--ink)}
+.esc-legacy .btn-custom{box-shadow:none!important;background:transparent!important;border:0!important}
+.esc-legacy .dt-buttons .dt-button{border-radius:8px!important;font-size:12px;padding:5px 12px}
+.esc-legacy #datos .btn{margin-right:0}
+
+/* ── Formularios ── */
+.esc-legacy label{font-weight:500;color:var(--ink-2);font-size:12.5px}
+.esc-legacy .form-control,.esc-legacy select,.esc-legacy input[type=text],.esc-legacy input[type=number],.esc-legacy input[type=date],.esc-legacy input[type=password],.esc-legacy input[type=search],.esc-legacy textarea{border:1px solid var(--border-strong);border-radius:10px;box-shadow:none;font-family:inherit;color:var(--ink)}
+.esc-legacy .form-control{height:auto;min-height:38px;padding:8px 11px;font-size:13.5px}
+.esc-legacy .form-control:focus,.esc-legacy input:focus,.esc-legacy select:focus,.esc-legacy textarea:focus{border-color:var(--primary);outline:0;box-shadow:0 0 0 3px oklch(0.64 0.19 37 / .15)}
+.esc-legacy .input-group-addon{border-radius:10px;border-color:var(--border-strong);background:var(--soft);color:var(--muted)}
+.esc-legacy .select2-container--default .select2-selection--single,.esc-legacy .select2-container--default .select2-selection--multiple{border:1px solid var(--border-strong);border-radius:10px;min-height:38px}
+.esc-legacy .select2-container--default .select2-selection--single .select2-selection__rendered{line-height:36px}
+.esc-legacy .select2-container--default .select2-selection--single .select2-selection__arrow{height:36px}
+.esc-legacy .select2-container--default.select2-container--focus .select2-selection--multiple,.esc-legacy .select2-container--default.select2-container--open .select2-selection--single{border-color:var(--primary)}
+.esc-legacy .select2-container--default .select2-results__option--highlighted[aria-selected]{background:var(--primary)}
+.esc-legacy .checkbox label,.esc-legacy .radio label{font-size:13px}
+
+/* ── Tablas ── */
+.esc-legacy table{font-size:13px}
+.esc-legacy table.dataTable{border-collapse:collapse!important}
+.esc-legacy table.dataTable thead th,.esc-legacy table.dataTable thead td{border-bottom:1px solid var(--border)!important;color:var(--muted);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;padding:10px!important}
+.esc-legacy table.dataTable.no-footer{border-bottom:1px solid var(--border)}
+.esc-legacy table.dataTable tbody tr{background:transparent}
+.esc-legacy table.dataTable tbody td,.esc-legacy table.dataTable tbody th{padding:9px 10px!important;font-size:13px;border-top:1px solid var(--row-line)}
+.esc-legacy table.dataTable.stripe tbody tr.odd,.esc-legacy table.dataTable.display tbody tr.odd,.esc-legacy table.dataTable.hover tbody tr:hover,.esc-legacy table.dataTable tbody tr:hover{background:#faf8f6!important}
+.esc-legacy table.dataTable.display tbody tr.odd>.sorting_1,.esc-legacy table.dataTable.display tbody tr.even>.sorting_1,.esc-legacy table.dataTable.order-column tbody tr>.sorting_1{background:transparent!important}
+.esc-legacy .table>thead>tr>th{border-bottom:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.esc-legacy .table>tbody>tr>td{border-top:1px solid var(--row-line)}
+.esc-legacy #items thead tr,.esc-legacy #frmfactura table thead{background:var(--soft)!important;color:var(--muted)}
+.esc-legacy #items thead tr td,.esc-legacy #items thead tr th{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;padding:9px 8px}
+.esc-legacy #items td{vertical-align:middle}
+.esc-legacy tr.anulado{color:var(--danger-strong)}
+.esc-legacy .dataTables_wrapper .dataTables_filter input,.esc-legacy .dataTables_wrapper .dataTables_length select{border:1px solid var(--border-strong);border-radius:8px;padding:5px 8px;background:#fff}
+.esc-legacy .dataTables_wrapper .dataTables_info,.esc-legacy .dataTables_wrapper .dataTables_length,.esc-legacy .dataTables_wrapper .dataTables_filter{color:var(--muted);font-size:12.5px}
+.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button{border-radius:8px!important;border:1px solid transparent!important;color:var(--ink-2)!important;font-size:12.5px}
+.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button.current,.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{background:var(--primary)!important;color:#fff!important;border-color:var(--primary)!important}
+.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button:hover{background:var(--track)!important;color:var(--ink)!important;border-color:var(--border)!important}
+.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,.esc-legacy .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover{background:transparent!important;color:var(--muted-2)!important;border-color:transparent!important}
+
+.esc-legacy .dataTables_wrapper{overflow-x:auto}
+
+/* ── Etiquetas de estado ── */
+.esc-legacy .label,.esc-legacy .badge{border-radius:var(--radius-pill);font-weight:500;font-size:11px;padding:3px 9px}
+.esc-legacy .label-success{background:#e4f3e7;color:#2d6b3a}
+.esc-legacy .label-danger{background:var(--danger-bg);color:var(--danger)}
+.esc-legacy .label-warning{background:var(--warn-bg);color:var(--warn)}
+.esc-legacy .label-default,.esc-legacy .label-info{background:#f2efeb;color:#57524d}
+
+/* ── Pestañas y modales de Bootstrap ── */
+.esc-legacy .nav-tabs{border-bottom:1px solid var(--border)}
+.esc-legacy .nav-tabs>li>a{border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--muted);background:transparent}
+.esc-legacy .nav-tabs>li.active>a,.esc-legacy .nav-tabs>li.active>a:hover,.esc-legacy .nav-tabs>li.active>a:focus{background:transparent;border:0;border-bottom:2px solid var(--primary);color:var(--ink);font-weight:600}
+.esc-legacy .modal-content{border-radius:var(--radius-card);border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.14)}
+.esc-legacy .modal-header{border-bottom:1px solid var(--border)}
+.esc-legacy .modal-footer{border-top:1px solid var(--border)}
+.esc-legacy .alert{border-radius:12px;border:0}
+.esc-legacy .alert-danger{background:var(--danger-bg);color:var(--danger)}
+.esc-legacy .alert-warning{background:var(--warn-bg);color:var(--warn)}
+.esc-legacy .alert-success{background:#e4f3e7;color:#2d6b3a}
+.esc-legacy .alert-info{background:#e6f0f8;color:#245a80}
+
+/* ── Móvil ── */
+@media (max-width:767px){
+  .esc-legacy .kbg,.esc-legacy.dashboard .kbg{padding:8px 12px 40px}
+  .esc-legacy .cuerpo,.esc-legacy .detalles{flex:1 1 100%}
+  .esc-legacy .submenu{padding:0 6px}
+  .esc-legacy .titulo h3{font-size:19px}
+}
+@media print{.esc-legacy .esc-subnav{display:none}}
+
+/* ── Caja: reutiliza sus variables con la paleta nueva ── */
+body.esc-legacy{--c-navy:var(--ink);--c-orange:var(--primary)}
+.esc-legacy .caja-wrap{margin-top:0!important;padding-top:20px}
+.esc-legacy .resumen-card,.esc-legacy .cola-item{box-shadow:none;border:1px solid var(--border);border-radius:var(--radius-card)}
+.esc-legacy .resumen-card .rc-valor{font-family:var(--mono)}

@@ -26,21 +26,12 @@ $openai_api_key = get_config('openai_api_key');
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<?php esc_head(); ?>
 </head>
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
 <div class="">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-            </div>
-            <?php menu('8'); ?>
-        </div>
+    <?php menu_v2('8'); ?>
+		<nav class="esc-subnav">
     </nav>
 
     <div class="container-fluid" style="margin-top:70px;max-width:900px">

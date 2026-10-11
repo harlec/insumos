@@ -14,23 +14,13 @@ include('inc/control.php');
     <link rel="stylesheet" href="/assets/css/jquery-ui.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.5/sweetalert2.min.css">
+<?php esc_head(); ?>
 </head>
 
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
 	<div class="">
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-	      <div class="">
-	        <div class="navbar-header">
-	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-	        </div>
-	        <?php menu('2'); ?>
-	      </div>
+		<?php menu_v2('2'); ?>
+		<nav class="esc-subnav">
 	      <div class="submenu">
 	      	<ul class="subtop-tabs">
 	      		<li class="active">

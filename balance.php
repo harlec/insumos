@@ -116,23 +116,13 @@ function s($n) { return 'S/ ' . number_format($n, 2); }
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.5.0/sweetalert2.min.css" integrity="sha512-YpZXdiMhuP3woCdvg0ou2UPj6l4KQUuf3gbMXTNMgtqTakMInX7h+64CTh+UIvYdA7ctBU2BAA/h4eEhoMEmsg==" crossorigin="anonymous" />
     <style>.kpi{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:15px}.kpi small{color:#888;text-transform:uppercase;font-weight:700}.kpi h3{margin:4px 0 0}.pos{color:#27ae60}.neg{color:#c0392b}</style>
+<?php esc_head(); ?>
 </head>
 
-<body class="mobile dashboard">
+<body class="mobile dashboard esc esc-legacy">
 	<div class="">
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-	      <div class="">
-	        <div class="navbar-header">
-	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="#"><img class="img-responsive logo" src="/assets/img/harlec-sistema.png"></a>
-	        </div>
-	        <?php menu('11'); ?>
-	      </div>
+		<?php menu_v2('11'); ?>
+		<nav class="esc-subnav">
 	      <div class="submenu">
 	      	<ul class="subtop-tabs">
 	      		<li><a href="gastos.php">Gastos</a></li>
