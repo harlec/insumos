@@ -1,10 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type'] === 'operador') {
-    header("Location: dashboard.php");
-    exit;
-}
-
 require_once __DIR__ . '/inc/sdba/sdba.php';
 require_once __DIR__ . '/inc/config_facturacion.php';
 require_once __DIR__ . '/inc/dompdf/autoload.inc.php';

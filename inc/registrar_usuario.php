@@ -3,6 +3,8 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint('usuarios', 'crear');
 
 include('sdba/sdba.php'); // include main file
 
@@ -16,6 +18,8 @@ $mensajeError = 'hasta aca bien';
 	$usuario = $_POST['usuario'];
 	$password = $_POST['password'];
 	$rol = $_POST['rol'];
+	require_once __DIR__ . '/permisos.php';
+	list($rol_id, $rol_txt) = resolver_rol($rol);
 	$tablet_mode = isset($_POST['tablet_mode']) ? 1 : 0;
 	//$tienda = $_POST['tienda'];
 
@@ -36,7 +40,7 @@ $mensajeError = 'hasta aca bien';
 		//guardamos en tabla ventas
 			
 			$ventas = Sdba::table('usuarios');
-			$data = array('id_usuario'=>'','nombres'=> $nombre,'usuario'=>$usuario,'clave'=>$pwd_peppered,'tienda'=>'1','rol'=>$rol,'estado'=>'1','tablet_mode'=>$tablet_mode);
+			$data = array('id_usuario'=>'','nombres'=> $nombre,'usuario'=>$usuario,'clave'=>$pwd_peppered,'tienda'=>'1','rol'=>$rol_txt,'rol_id'=>$rol_id,'estado'=>'1','tablet_mode'=>$tablet_mode);
 			$ventas->insert($data);
 			$venta_id = $ventas->insert_id();
 			if ($venta_id) {

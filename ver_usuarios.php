@@ -1,12 +1,10 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/sdba/sdba.php'); // include main file
 $ventas = Sdba::table('usuarios'); // creating table object
-$ventas_list = $ventas->get(); 
+$ventas_list = $ventas->get();
+$nombres_rol = [];
+foreach (roles_lista() as $ro) { $nombres_rol[(int)$ro['id_rol']] = $ro['nombre']; }
 
 $datos = '';
 $i = 1;
@@ -15,7 +13,7 @@ foreach ($ventas_list as $value) {
 	$datos .='<tr><td>'.$value['id_usuario'].'</td> 
     			<td>'.$value['nombres'].'</td>
     			<td>'.$value['usuario'].'</td> 
-    			<td>'.$value['rol'].'</td> 
+    			<td>'.htmlspecialchars($nombres_rol[(int)($value['rol_id'] ?? 0)] ?? $value['rol']).'</td> 
     			<td>'.(!empty($value['tablet_mode'])&&$value['tablet_mode']==1?'<span style="color:#27ae60;font-weight:bold">&#x2713; Tablet</span>':'').'</td>
     			<td><button class="btn-custom" id="borrar" value="'.$value['id_usuario'].'" alt="borrar"><img src="assets/img/trash.png" /></button><a href="editar_usuario.php?id='.$value['id_usuario'].'"><img src="assets/img/edit.png"></a></td> 
     		  </tr>';

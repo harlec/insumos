@@ -1,9 +1,10 @@
 <?php
 session_start();
+require_once __DIR__ . '/permisos.php';
 include('sdba/sdba.php');
 include('config_facturacion.php');
 
-if ($_SESSION['type'] !== 'admin') {
+if (!puede('facturacion', 'editar')) {
     echo json_encode(array('ok' => false, 'mensaje' => 'No autorizado'));
     exit;
 }

@@ -1,9 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 $id_periodo = intval($_GET['id'] ?? 0);
 
 $conn = db_connect();

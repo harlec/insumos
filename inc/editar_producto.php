@@ -3,6 +3,8 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint('productos', 'editar');
 
 include('sdba/sdba.php'); // include main file
 
@@ -23,11 +25,6 @@ $mensajeError = 'hasta aca bien';
 	// $exonerada = $_POST['exonerada'];
 	// $codigo = $_POST['codigo'];
 	$stockn = $_POST['stock'];
-	$id_vp = $_POST['id_vp'];
-	$variante = $_POST['variante'];
-	$cantidadv = $_POST['cantidadv'];
-	$preciov = $_POST['preciov'];
-	$preciocv = $_POST['preciocv'] ?? [];
 	$fecha = date("Y-m-d");
 
 	$respuestaOk = true;
@@ -38,12 +35,8 @@ $mensajeError = 'hasta aca bien';
 			$data = array('nom_prod'=>$nombre,'codigo_producto'=>'','precio_venta'=>$precio_v,'precio_compra'=>$_POST['precio_c'] ?? '','unidad_prod'=>$unidad,'categoria'=>$categoria);
 			$ventas->update($data);
 
-			//insertamos las variantes
-			$variantes = Sdba::table('variante_p');
-				for ($i=0; $i < count($variante ) ; $i++) { 
-					$data2 = array('id_vp'=>$id_vp[$i],'producto_vp'=>$id,'variante_vp'=>$variante[$i],'cantidad_vp'=>$cantidadv[$i],'precio_vp'=>$preciov[$i],'precioc_vp'=>$preciocv[$i] ?? 0,'state_vp'=>'1');
-					$variantes->set($data2);
-				}
+			require_once __DIR__ . '/producto_helper.php';
+			variante_unica_sincronizar($id, $precio_v, $_POST['precio_c'] ?? 0);
 				$respuestaOk = true;
 				$mensajeError = 'entro';
 

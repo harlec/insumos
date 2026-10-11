@@ -1,9 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-    header("Location: dashboard.php");
-    exit;
-}
 $conn = db_connect();
 $conn->set_charset('utf8');
 $anios = [];

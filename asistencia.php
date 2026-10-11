@@ -1,9 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 $fecha = isset($_GET['fecha']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fecha']) ? $_GET['fecha'] : date('Y-m-d');
 
 include('inc/sdba/sdba.php');

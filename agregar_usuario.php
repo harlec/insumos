@@ -1,9 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -98,8 +94,11 @@ if ($_SESSION['type']=='operador') {
 															<div class="form-group">
 															    <label for="exampleInputPassword1">Rol</label>
 															    <select class="form-control" name="rol" id="rol">
-															    	<option value="admin">administrador</option>
-															    	<option value="operador">vendedor</option>
+															    	<?php
+															    	$roles_op = roles_lista();
+															    	if ($roles_op) { foreach ($roles_op as $ro) { echo '<option value="'.(int)$ro['id_rol'].'">'.htmlspecialchars($ro['nombre']).'</option>'; } }
+															    	else { echo '<option value="admin">administrador</option><option value="operador">vendedor</option>'; }
+															    	?>
 															    </select>
 															</div>
 															<div class="form-group">

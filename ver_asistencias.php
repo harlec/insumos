@@ -1,9 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/horario_helpers.php');
 
 $hoy = date('Y-m-d');

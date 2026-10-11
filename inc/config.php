@@ -24,7 +24,9 @@ function app_instalada() {
 // Conexión mysqli con las credenciales configuradas (sustituye a los new mysqli(...) con datos escritos a mano).
 function db_connect() {
 	mysqli_report(MYSQLI_REPORT_OFF);
-	return new mysqli(cfg('db.host', 'localhost'), cfg('db.user', ''), cfg('db.pass', ''), cfg('db.name', ''), (int)cfg('db.port', 3306));
+	$db = new mysqli(cfg('db.host', 'localhost'), cfg('db.user', ''), cfg('db.pass', ''), cfg('db.name', ''), (int)cfg('db.port', 3306));
+	if (!$db->connect_errno) { $db->query("SET SESSION sql_mode = ''"); } // mismo modo no estricto que Sdba (código heredado)
+	return $db;
 }
 
 // Hash de clave de usuario; debe coincidir en login, alta y edición de usuarios.

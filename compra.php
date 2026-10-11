@@ -342,7 +342,7 @@ foreach ($proveedoresl as $key) {
 		        data: 'producto=' + id_p,
 		        success: function(variantes) {
 		            var precio, monto, row;
-		            if (variantes.length > 0) {
+		            if (variantes.length > 1) {
 		                var selectHtml = '<select class="variante_sel form-control input-sm">';
 		                $.each(variantes, function(i, v) {
 		                    selectHtml += '<option value="' + v.id_vp + '" data-precio="' + v.precioc_vp + '" data-cantidad="' + v.cantidad_vp + '">' + v.variante + '</option>';
@@ -355,25 +355,25 @@ foreach ($proveedoresl as $key) {
 		                    '<input type="hidden" value="' + id_p + '" name="id_pro[]">' +
 		                    '<input type="hidden" value="' + unidad + '" name="unidad[]">' +
 		                    '<input type="hidden" class="id_vp_input" value="' + variantes[0].id_vp + '" name="id_vp[]">' +
-		                    '<td><input class="cantidad" type="number" value="' + cantidad + '" name="cantidad[]"></td>' +
+		                    '<td><input class="cantidad" type="number" step="any" min="0" value="' + cantidad + '" name="cantidad[]"></td>' +
 		                    '<td>' + selectHtml + '</td>' +
 		                    '<td>' + nombre + '</td>' +
-		                    '<td><input type="number" class="pre" value="' + precio + '" name="precio[]"></td>' +
+		                    '<td><input type="number" step="any" class="pre" value="' + precio + '" name="precio[]"></td>' +
 		                    '<td><input class="mon" type="text" value="' + monto + '" name="total_pre[]"></td>' +
 		                    '<td><button value="' + monto + '" class="borrar">x</button></td>' +
 		                    '</tr>';
 		            } else {
-		                precio = precioDefecto;
+		                precio = variantes.length === 1 ? variantes[0].precioc_vp : precioDefecto;
 		                monto = precio * cantidad;
 		                total = monto*1 + total*1;
 		                row = '<tr class="child">' +
 		                    '<input type="hidden" value="' + id_p + '" name="id_pro[]">' +
 		                    '<input type="hidden" value="' + unidad + '" name="unidad[]">' +
-		                    '<input type="hidden" name="id_vp[]" value="">' +
-		                    '<td><input class="cantidad" type="number" value="' + cantidad + '" name="cantidad[]"></td>' +
+		                    '<input type="hidden" name="id_vp[]" value="' + (variantes.length === 1 ? variantes[0].id_vp : '') + '">' +
+		                    '<td><input class="cantidad" type="number" step="any" min="0" value="' + cantidad + '" name="cantidad[]"></td>' +
 		                    '<td style="text-transform:uppercase;">' + unidad + '</td>' +
 		                    '<td>' + nombre + '</td>' +
-		                    '<td><input type="number" class="pre" value="' + precio + '" name="precio[]"></td>' +
+		                    '<td><input type="number" step="any" class="pre" value="' + precio + '" name="precio[]"></td>' +
 		                    '<td><input class="mon" type="text" value="' + monto + '" name="total_pre[]"></td>' +
 		                    '<td><button value="' + monto + '" class="borrar">x</button></td>' +
 		                    '</tr>';

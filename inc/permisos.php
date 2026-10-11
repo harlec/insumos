@@ -16,8 +16,9 @@ function permisos_db() {
 }
 
 // Carga una sola vez por request: catálogo, rol del usuario y su matriz de permisos.
-function permisos_cargar() {
+function permisos_cargar($reiniciar = false) {
 	static $c = null;
+	if ($reiniciar) $c = null;
 	if ($c !== null) return $c;
 	$c = ['legacy' => true, 'admin' => false, 'modulos' => [], 'perm' => []];
 	$es_admin_legacy = (($_SESSION['type'] ?? '') === 'admin');
@@ -110,6 +111,7 @@ function modulos_para_menu($solo_menu = true) {
 function config_enlaces() {
 	$extras = [
 		['configuracion', 'modulos_config.php',            'Módulos y permisos',     'ph-shield-check'],
+		['configuracion', 'actualizar_bd.php',             'Actualizar base de datos','ph-database'],
 		['tablet',        'tablet_config_admin.php',       'Configuración Tablet',   'ph-device-tablet'],
 		['facturacion',   'configuracion_facturacion.php', 'Facturación Electrónica','ph-file-text'],
 		['productos',     'alias_productos.php',           'Diccionario',            'ph-book-open'],
@@ -132,7 +134,7 @@ function config_enlaces() {
 
 function permisos_accion_de_archivo($archivo) {
 	if (preg_match('/^(agregar_|registrar_|generar_)/', $archivo)) return 'crear';
-	if (preg_match('/^editar_/', $archivo)) return 'editar';
+	if (preg_match('/^(editar_|configuracion_|tablet_config|alias_)/', $archivo)) return 'editar';
 	if (preg_match('/^(anular_|borrar_)/', $archivo)) return 'anular';
 	return 'ver';
 }
@@ -180,4 +182,37 @@ function requiere_pagina() {
 	$clave = permisos_modulo_de_archivo($archivo);
 	if ($clave === null) return;
 	requiere_modulo($clave, permisos_accion_de_archivo($archivo));
+}
+
+// Roles activos para llenar selectores de usuario.
+function roles_lista() {
+	$db = permisos_db();
+	$out = [];
+	$r = $db ? $db->query("SELECT id_rol, nombre, es_admin FROM roles WHERE estado = 1 ORDER BY es_admin DESC, nombre") : false;
+	while ($r && ($f = $r->fetch_assoc())) { $out[] = $f; }
+	return $out;
+}
+
+// Valor del selector de rol (id de rol, o 'admin'/'operador' si aún no hay tablas) -> [rol_id|null, texto para usuarios.rol].
+function resolver_rol($valor) {
+	$db = permisos_db();
+	if ($db && ctype_digit((string)$valor)) {
+		$st = $db->prepare("SELECT id_rol, es_admin FROM roles WHERE id_rol = ? AND estado = 1");
+		$id = (int)$valor;
+		$st->bind_param('i', $id);
+		$st->execute();
+		if ($f = $st->get_result()->fetch_assoc()) return [(int)$f['id_rol'], $f['es_admin'] ? 'admin' : 'operador'];
+	}
+	return [null, $valor === 'admin' ? 'admin' : 'operador'];
+}
+
+// Guardia para endpoints JSON de inc/: exige sesión y permiso sobre el módulo/acción.
+function guardia_endpoint($clave, $accion = 'ver') {
+	$denegado = empty($_SESSION['ingress']) ? 401 : (puede($clave, $accion) ? 0 : 403);
+	if ($denegado) {
+		http_response_code($denegado);
+		header('Content-Type: application/json');
+		echo json_encode(['respuesta' => false, 'mensaje' => $denegado == 401 ? 'Sesión expirada' : 'No tienes permiso para esta acción']);
+		exit;
+	}
 }

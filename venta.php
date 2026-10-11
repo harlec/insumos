@@ -21,6 +21,8 @@ $variantes_p->left_join('producto_vp','productos','id_producto');
 $variantes_p->left_join('producto_vp','marca','id_marca');
 $variantes_p->where('estado', '1', 'productos');
 $variantes_p_l = $variantes_p->get();
+$unidades_nombre = [];
+foreach (Sdba::table('unidades')->get() as $un) { $unidades_nombre[$un['id_unidad']] = $un['nombre']; }
 
 $datos = '';
 $i = 1;
@@ -37,7 +39,7 @@ foreach ($variantes_p_l as $value) {
 
 	$datos .='<tr> 
     			<td style="text-transform:uppercase;" class="nom_prod">'.$value['codigo_producto'].' '.$value['nom_prod'].' '.$marcan.'</td>
-    			<td style="text-transform:uppercase;" class="unidad"><input type="hidden" class="id_vp" value="'.$value['id_vp'].'">'.'<input type="hidden" class="cantidad_vp" value="'.$value['cantidad_vp'].'">'.$value['variante'].'('.$value['cantidad_vp'].')</td>
+    			<td style="text-transform:uppercase;" class="unidad"><input type="hidden" class="id_vp" value="'.$value['id_vp'].'">'.'<input type="hidden" class="cantidad_vp" value="'.$value['cantidad_vp'].'">'.($unidades_nombre[$value['unidad_prod']] ?? '').'</td>
     			<td class="stock">'.$stocktt.'</td>
 				<td><input type="hidden" class="precio_venta" value="'.$precio_final.'">'.$value['precio_vp'].'</td>
     			<td><button id="agregar" value="'.$value['id_producto'].'" class="btn btn-lg btn-success"> + </button></td>
@@ -554,7 +556,7 @@ $('div.dataTables_filter input').on('keyup', function() {
 		    	total = monto*1 + total*1;
 		    	total1 = Number(total.toFixed(2));
 
-		    	$('#items tr:last').after('<tr class="child"><input type="hidden" class="id_vp" value="'+id_vp+'" name="id_vp[]" ><input type="hidden" class="stocki" value="'+stock_units+'" name="stock[]" ><input type="hidden" value="'+id_p+'" name="id_pro[]" ><td><input class="cantidad" type="number" max="'+stock_units+'" value="'+cantidad_vp+'" name="cantidad[]"></td><td style="text-transform:uppercase;">'+nombre+'</td><td style="text-transform:uppercase;">'+unidad+'</td><td><input type="number" class="pre" value="'+precio+'" name="precio[]"></td><td ><input class="mon" type="text" value="'+monto1+'" name="total_pre[]" ></td><td><button value="'+monto+'" class="borrar">x</button></td></tr>');
+		    	$('#items tr:last').after('<tr class="child"><input type="hidden" class="id_vp" value="'+id_vp+'" name="id_vp[]" ><input type="hidden" class="stocki" value="'+stock_units+'" name="stock[]" ><input type="hidden" value="'+id_p+'" name="id_pro[]" ><td><input class="cantidad" type="number" step="any" min="0" max="'+stock_units+'" value="'+cantidad_vp+'" name="cantidad[]"></td><td style="text-transform:uppercase;">'+nombre+'</td><td style="text-transform:uppercase;">'+unidad+'</td><td><input type="number" step="any" class="pre" value="'+precio+'" name="precio[]"></td><td ><input class="mon" type="text" value="'+monto1+'" name="total_pre[]" ></td><td><button value="'+monto+'" class="borrar">x</button></td></tr>');
 		    	$("#total").val(total);
 		    	$("#total1").val(total1);
 

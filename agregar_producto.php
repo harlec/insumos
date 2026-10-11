@@ -1,8 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
 include('inc/sdba/sdba.php'); 
 $unidades = Sdba::table('unidades');
 $unidades->where('estado','1');
@@ -20,14 +17,6 @@ $categorias_list = $categorias->get();
 $categorias_l='';
 foreach ($categorias_list as $value1) {
 	$categorias_l .='<option value="'.$value1['id_categoria'].'">'.$value1['nom_cat'].'</option>';
-}
-
-//variantes
-$variantes = Sdba::table('variantes');
-$variantes_list = $variantes->get();
-$variantes_l = '';
-foreach ($variantes_list as $vl) {
-	$variantes_l .='<option value="'.$vl['id_variante'].'">'.$vl['variante'].'</option>';
 }
 
 
@@ -74,9 +63,6 @@ foreach ($variantes_list as $vl) {
 	      		<li >
 	      			<a href="categorias.php">Categorías</a>
 	      		</li>
-	      		<li >
-	      			<a href="variantes.php">Variantes</a>
-	      		</li>
 	      	</ul>
 	      </div>
 	    </nav>
@@ -118,7 +104,7 @@ foreach ($variantes_list as $vl) {
 															</div>
 															<div class="form-group">
 															    <label for="exampleInputPassword1">Precio venta</label>
-															    <input type="text" class="form-control" name="precio_v" id="precio_v" placeholder="Precio venta">
+															    <input type="number" step="0.01" min="0" class="form-control" name="precio_v" id="precio_v" placeholder="Precio venta">
 															</div>
 															<!-- <div class="form-group">
 															    <label for="exampleInputPassword1">Exonerado Igv</label>
@@ -133,35 +119,10 @@ foreach ($variantes_list as $vl) {
 															</div>
 															<div class="form-group">
 															    <label for="exampleInputPassword1">Stock</label>
-															    <input type="text" class="form-control" name="stock" id="stock" placeholder="Stock">
+															    <input type="number" step="any" min="0" class="form-control" name="stock" id="stock" placeholder="Stock inicial (en la unidad elegida)">
 															</div>
 											    		</div>
-											    		<div class="col-md-6">
-											    			<h3>Opciones adicionales</h3>
-											    			<h4>Variantes de precios</h4> 
-											    			<table class="table">
-											    			<tr>
-									    						<td width="40%"><select style="width: 100%" id="vari"><?= $variantes_l; ?><</select></td>
-									    						<td><input name="conatidad" id="cantidad" placeholder="cantidad" type="text"></td>
-									    						<td><input name´="precio" id="precio" placeholder="precio" type="text"></td>
-									    						<td><input id="precioc" placeholder="precio compra" type="number" step="0.01"></td>
-									    						<td><input type="button" class="btn  btn-success" id="add"value="+" /></td>
-									    					</tr>
-											    			</table>
-											    			<table id="variantes" class="table">
-											    				<thead>
-											    					<tr>
-											    						<th>Variante</th>
-											    						<th>Cantidad</th>
-											    						<th>Precio</th>
-											    						<th>Precio Compra</th>
-											    					</tr>
-											    				</thead>
-											    				<tbody>
-											    					
-											    				</tbody>
-											    			</table>
-											    		</div>
+											    		
 											    	</div>
 											    	
 												  <button type="button" id="guardar_venta" class="btn btn-success btn-block btn-lg">Registrar</button>
@@ -193,49 +154,6 @@ foreach ($variantes_list as $vl) {
 
 		$('#categoria').select2();
 		$('#unidad').select2();
-		$('#vari').select2();
-
-		var total = 0;
-			$('#add').click(function() {
-				var variante = $('#vari').val();
-				var variante_text =  $("#vari option:selected").text();
-				var cantidad = $('#cantidad').val();
-				var precio = $('#precio').val();
-				var precioc = $('#precioc').val();
-				//alert(variante_text);
-				$('#variantes').find('tbody').append('<tr><td><input type="hidden" name="variante[]" value="'+variante+'"><input type="text" value="'+variante_text+'"></td><td><input type="text" name="cantidadv[]" value="'+cantidad+'"></td><td><input type="text" name="preciov[]" value="'+precio+'"></td><td><input type="number" step="0.01" name="preciocv[]" class="preciocv-input" value="'+precioc+'"></td><td><button value="" class="borrar">x</button></td></tr>');
-				$('#cantidad').val('');
-				$('#precio').val('');
-				$('#precioc').val('');
-		    });
-
-		    //borrar item
-		    $("#variantes").on('click', '.borrar', function () {
-			    //$(this).closest('tr').remove();
-			    
-			    // var resta = $(this).val();
-			    // console.log(resta)
-			    $(this).parents("tr").remove();
-			   /* total = total - resta*1;
-			    $("#total").val(total);*/
-			});
-
-		    // Auto-calculate purchase price for other variants based on unit price ratio
-		    $("#variantes").on('change', '.preciocv-input', function() {
-			    var preciocVal = parseFloat($(this).val()) || 0;
-			    var $row = $(this).closest('tr');
-			    var cantidadVal = parseFloat($row.find('input[name="cantidadv[]"]').val()) || 0;
-			    if (preciocVal > 0 && cantidadVal > 0) {
-				    var unitPrice = preciocVal / cantidadVal;
-				    $('#variantes tbody tr').each(function() {
-					    if ($(this).is($row)) return;
-					    var otherCantidad = parseFloat($(this).find('input[name="cantidadv[]"]').val()) || 0;
-					    if (otherCantidad > 0) {
-						    $(this).find('.preciocv-input').val((unitPrice * otherCantidad).toFixed(2));
-					    }
-				    });
-			    }
-		    });
 
 	   		//autocompletamos el producto
 		    $('#basics').autocomplete({

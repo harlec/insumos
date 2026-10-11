@@ -1,5 +1,7 @@
 <?php require_once __DIR__ . '/config.php';
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint('usuarios', 'editar');
 
 include('sdba/sdba.php'); // include main file
 
@@ -13,6 +15,8 @@ $mensajeError = 'hasta aca bien';
 	$usuario = $_POST['usuario'];
 	$password = $_POST['password'];
 	$rol = $_POST['rol'];
+	require_once __DIR__ . '/permisos.php';
+	list($rol_id, $rol_txt) = resolver_rol($rol);
 	$tienda = $_POST['tienda'];
 	$tablet_mode = isset($_POST['tablet_mode']) ? 1 : 0;
 
@@ -22,11 +26,11 @@ $mensajeError = 'hasta aca bien';
 	
 	$respuestaOk = true;
 	if (empty($password)) {
-		$data = array('nombres'=> $nombre,'usuario'=>$usuario,'tienda'=>$tienda,'rol'=>$rol,'tablet_mode'=>$tablet_mode);
+		$data = array('nombres'=> $nombre,'usuario'=>$usuario,'tienda'=>$tienda,'rol'=>$rol_txt,'rol_id'=>$rol_id,'tablet_mode'=>$tablet_mode);
 	}
 	else{
 		
-		$data = array('nombres'=> $nombre,'usuario'=>$usuario,'clave'=>$pwd_peppered,'tienda'=>$tienda,'rol'=>$rol,'tablet_mode'=>$tablet_mode);
+		$data = array('nombres'=> $nombre,'usuario'=>$usuario,'clave'=>$pwd_peppered,'tienda'=>$tienda,'rol'=>$rol_txt,'rol_id'=>$rol_id,'tablet_mode'=>$tablet_mode);
 	}
 	//guardamos en tabla ventas
 		

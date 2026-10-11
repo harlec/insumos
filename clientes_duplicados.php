@@ -1,9 +1,5 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-if ($_SESSION['type'] != 'admin') {
-	header("Location: dashboard.php");
-	exit;
-}
 include('inc/cliente_duplicados.php');
 ini_set('memory_limit', '256M');
 set_time_limit(60);

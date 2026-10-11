@@ -1,22 +1,12 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
 $id = $_GET['id'];
 include('inc/sdba/sdba.php');
 $usuarios = Sdba::table('usuarios'); 
 $usuarios->where('id_usuario',$id);// creating table object
 $ul = $usuarios->get_one();
 
-switch ($ul['rol']) {
-	case 'admin':
-		$admin = 'selected';
-		break;
-	case 'operador':
-		$operador = 'selected';
-		break;
-}
+$roles_op = roles_lista();
 $tablet_checked = (!empty($ul['tablet_mode']) && $ul['tablet_mode']==1) ? 'checked' : '';
 ?>
 
@@ -113,8 +103,10 @@ $tablet_checked = (!empty($ul['tablet_mode']) && $ul['tablet_mode']==1) ? 'check
 															<div class="form-group">
 															    <label for="exampleInputPassword1">Rol</label>
 															    <select class="form-control" name="rol" id="rol">
-															    	<option <?php echo $admin; ?> value="admin">administrador</option>
-															    	<option <?php echo $operador; ?> value="operador">vendedor</option>
+															    	<?php
+															    	if ($roles_op) { foreach ($roles_op as $ro) { echo '<option value="'.(int)$ro['id_rol'].'"'.((int)$ro['id_rol'] === (int)($ul['rol_id'] ?? 0) ? ' selected' : '').'>'.htmlspecialchars($ro['nombre']).'</option>'; } }
+															    	else { echo '<option value="admin"'.($ul['rol']=='admin' ? ' selected' : '').'>administrador</option><option value="operador"'.($ul['rol']=='operador' ? ' selected' : '').'>vendedor</option>'; }
+															    	?>
 															    </select>
 															</div>
 															<div class="form-group">

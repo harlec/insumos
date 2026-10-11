@@ -72,6 +72,8 @@ class Sdba
         if (!$this->db)
             $this->error('Connection error. Can not connect to database');
         $this->db->set_charset($dbencoding);
+        // El código heredado inserta '' en columnas autoincrementales: requiere modo SQL no estricto.
+        $this->db->query("SET SESSION sql_mode = ''");
         if ($this->db->error)
             $this->error($this->db->error);
         if ($table)

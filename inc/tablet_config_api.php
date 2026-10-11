@@ -3,7 +3,8 @@ ob_start();
 ini_set('display_errors', '0');
 error_reporting(0);
 session_start();
-if (empty($_SESSION['ingress']) || $_SESSION['type'] !== 'admin') {
+require_once __DIR__ . '/permisos.php';
+if (empty($_SESSION['ingress']) || !puede('tablet', 'editar')) {
     ob_clean(); http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'No autorizado']); exit;
 }
 header('Content-Type: application/json');

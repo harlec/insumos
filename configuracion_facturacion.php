@@ -1,6 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type'] !== 'admin') { header("Location: dashboard.php"); exit; }
 include('inc/sdba/sdba.php');
 include('inc/config_facturacion.php');
 

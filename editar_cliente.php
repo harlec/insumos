@@ -1,8 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
 $id = $_GET['id'];
 include('inc/sdba/sdba.php');
 $usuarios = Sdba::table('clientes'); 

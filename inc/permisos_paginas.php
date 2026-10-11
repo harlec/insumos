@@ -24,5 +24,5 @@ return [
 	'planillas'     => ['planillas.php', 'ver_planilla.php', 'ver_planilla_detalle.php', 'configuracion_planillas.php', 'boleta_pago.php', 'movimientos.php'],
 	'tablet'        => ['tablet_config_admin.php'],
 	'auditoria'     => ['logs_auditoria.php'],
-	'configuracion' => ['modulos_config.php'],
+	'configuracion' => ['modulos_config.php', 'modulos_api.php', 'actualizar_bd.php'],
 ];

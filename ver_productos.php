@@ -1,9 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/sdba/sdba.php'); // include main file
 $ventas = Sdba::table('productos');
 $ventas->left_join('categoria','categorias','id_categoria'); // creating table object
@@ -112,9 +108,6 @@ foreach ($ventas_list as $value) {
 	      		</li>
 	      		<li >
 	      			<a href="categorias.php">Categorías</a>
-	      		</li>
-	      		<li >
-	      			<a href="variantes.php">Variantes</a>
 	      		</li>
 	      	</ul>
 	      </div>

@@ -1,9 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/sdba/sdba.php'); // include main file
 $ventas = Sdba::table('stock');
 $ventas->left_join('producto','productos','id_producto'); 

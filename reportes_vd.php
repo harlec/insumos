@@ -1,9 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/sdba/sdba.php'); // include main file
 
 $hoy = date('Y-m-d');

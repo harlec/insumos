@@ -1,11 +1,6 @@
 <?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 include_once('inc/medios_pago.php');
-if ($_SESSION['type'] != 'admin') {
-	header("Location: dashboard.php");
-	exit;
-}
-
 $conn = db_connect();
 $conn->set_charset('utf8');
 

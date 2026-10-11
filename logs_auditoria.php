@@ -2,11 +2,6 @@
 include('inc/control.php');
 
 // Solo administradores pueden ver los logs
-if ($_SESSION['type'] != 'admin') {
-    header("Location: dashboard.php");
-    exit();
-}
-
 include('inc/sdba/sdba.php');
 
 // Obtener logs de auditoría

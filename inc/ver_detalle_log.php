@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once __DIR__ . '/permisos.php';
 
 // Solo administradores pueden ver los detalles
-if ($_SESSION['type'] != 'admin') {
+if (!puede('auditoria', 'ver')) {
     echo 'No autorizado';
     exit();
 }

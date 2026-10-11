@@ -1,9 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-	header("Location: dashboard.php");
-}
-
 include('inc/sdba/sdba.php'); // include main file
 require_once(__DIR__ . '/inc/cliente_helper.php');
 $fusionados_idx = array_flip(cliente_ids_fusionados());

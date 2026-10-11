@@ -1,8 +1,5 @@
 <?php
 include('inc/control.php');
-if ($_SESSION['type']=='operador') {
-    header("Location: dashboard.php");
-}
 include('inc/sdba/sdba.php');
 $categorias = Sdba::table('categorias');
 $categorias_list = $categorias->get();
