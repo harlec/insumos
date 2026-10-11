@@ -21,6 +21,7 @@ if (isset($_POST) && !empty($_POST)) {
 		$user_list = $users->get_one();
 		//print_r($user_list);
 		if ($user_list) {
+			session_regenerate_id(true); // evita fijación de sesión
 			$respuestaOk = true;
 			$mensajeError = 'Bienvenido '.$user_list['nombres'];
 			$_SESSION['usuario']  = $usuario;

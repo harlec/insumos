@@ -4,6 +4,8 @@
 // inc/registrar_venta_tablet.php, esta NO valida ni descuenta stock (es para casos que no
 // deben tocar inventario) — solo deja la venta y su detalle registrados.
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 if (empty($_SESSION['ingress'])) {
     echo json_encode(['respuesta' => false, 'mensaje' => 'Sin sesión']);
     exit;

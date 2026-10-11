@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 if (empty($_SESSION['ingress'])) { http_response_code(403); exit; }
 
 header('Content-Type: application/json');

@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
+require_once __DIR__ . '/permisos.php';
 
 // Solo administradores pueden ver los detalles
 if (!puede('auditoria', 'ver')) {

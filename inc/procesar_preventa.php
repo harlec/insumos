@@ -2,6 +2,8 @@
 ob_start();
 ini_set('display_errors', '0');
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 if (empty($_SESSION['ingress'])) {
     ob_clean();
     http_response_code(403);

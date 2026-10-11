@@ -1,6 +1,8 @@
-
-
 <?php
+session_start();
+require_once __DIR__ . '/inc/permisos.php';
+guardia_endpoint('facturacion', 'ver');
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

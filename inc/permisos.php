@@ -208,11 +208,27 @@ function resolver_rol($valor) {
 
 // Guardia para endpoints JSON de inc/: exige sesión y permiso sobre el módulo/acción.
 function guardia_endpoint($clave, $accion = 'ver') {
-	$denegado = empty($_SESSION['ingress']) ? 401 : (puede($clave, $accion) ? 0 : 403);
+	$ok = false;
+	foreach (explode('|', $clave) as $m) { if (puede($m, $accion)) { $ok = true; break; } }
+	$denegado = empty($_SESSION['ingress']) ? 401 : ($ok ? 0 : 403);
 	if ($denegado) {
 		http_response_code($denegado);
 		header('Content-Type: application/json');
 		echo json_encode(['respuesta' => false, 'mensaje' => $denegado == 401 ? 'Sesión expirada' : 'No tienes permiso para esta acción']);
+		exit;
+	}
+}
+
+// Guardia por nombre de archivo para endpoints de inc/ (mapa en permisos_endpoints.php).
+function guardia_endpoint_auto() {
+	static $mapa = null;
+	if ($mapa === null) { $mapa = require __DIR__ . '/permisos_endpoints.php'; }
+	$archivo = basename($_SERVER['SCRIPT_NAME'] ?? '');
+	if (isset($mapa[$archivo])) { guardia_endpoint($mapa[$archivo][0], $mapa[$archivo][1]); return; }
+	if (empty($_SESSION['ingress'])) {
+		http_response_code(401);
+		header('Content-Type: application/json');
+		echo json_encode(['respuesta' => false, 'mensaje' => 'Sesión expirada']);
 		exit;
 	}
 }

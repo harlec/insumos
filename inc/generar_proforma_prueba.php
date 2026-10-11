@@ -11,6 +11,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 if (!isset($_SESSION['type']) || $_SESSION['type'] !== 'admin') {
 	echo json_encode(array('respuesta' => false, 'mensaje' => 'No autorizado', 'venta_id' => null));
 	exit;

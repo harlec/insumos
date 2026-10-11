@@ -5,6 +5,8 @@ if (empty($_SESSION['ingress'])) {
     header("Location: index.html");
     exit;
 }
+require_once __DIR__ . '/inc/permisos.php';
+if (!puede('tablet', 'ver')) { permisos_denegar(); }
 
 // ── Configuración del POS desde base de datos ───────────────
 require_once 'inc/sdba/sdba.php';

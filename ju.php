@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once __DIR__ . '/inc/permisos.php';
+guardia_endpoint('facturacion', 'ver');
+?>
 <h1>Se esta generando el ZIP espere un momento...</h1>
 <?php
 

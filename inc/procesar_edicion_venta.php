@@ -9,6 +9,8 @@ ini_set('display_errors', '0'); // Ocultar errores en producción
 error_reporting(E_ALL);
 
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 $id_usuario = $_SESSION['id_usr']; 
 $tienda = $_SESSION['tienda'];
 

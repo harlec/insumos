@@ -4,6 +4,8 @@
 // (igual que inc/registrar_planilla_descuento.php bloquea agregar descuentos a un
 // periodo 'cerrado').
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['id_usr'])) {

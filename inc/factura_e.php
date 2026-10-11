@@ -3,6 +3,8 @@ include('sdba/sdba.php');
 include('config_facturacion.php');
 include('nubefact_correlativo.php');
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 $usuario = $_SESSION['usuario'];
 
 //OBTENEMOS LOS PRODUCTOS

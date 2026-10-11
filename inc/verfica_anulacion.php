@@ -2,6 +2,8 @@
 include('sdba/sdba.php');
 include('config_facturacion.php');
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 
 
 $id = $_POST['id'];

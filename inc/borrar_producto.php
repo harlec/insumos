@@ -3,6 +3,8 @@
 // elimina físicamente para no romper el historial de ventas/compras que ya lo referencian
 // (y que antes fallaba en silencio por la restricción de llave foránea).
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 
 include('sdba/sdba.php'); // include main file
 

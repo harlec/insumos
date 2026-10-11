@@ -2,6 +2,8 @@
 // Borrado suave del proveedor (estado='0'), igual que ventas/compras: nunca se elimina
 // físicamente para no romper el historial de compras que ya lo referencian.
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 header('Content-Type: application/json');
 
 if (empty($_SESSION['ingress'])) {

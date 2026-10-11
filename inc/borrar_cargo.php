@@ -1,6 +1,8 @@
 <?php require_once __DIR__ . '/config.php';
 // Borrado suave (estado='0'), mismo patrón que inc/borrar_producto.php.
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['id_usr'])) {

@@ -6,6 +6,8 @@ ob_start();
 ini_set('display_errors', '0');
 error_reporting(0);
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 ob_clean();
 header('Content-Type: application/json');
 

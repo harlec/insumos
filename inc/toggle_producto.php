@@ -3,6 +3,8 @@
 // borrado suave de un solo sentido de borrar_producto.php: el producto nunca se elimina
 // físicamente (no rompe el historial de ventas/compras), y ahora es reversible.
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 
 include('sdba/sdba.php'); // include main file
 

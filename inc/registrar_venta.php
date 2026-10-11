@@ -1,5 +1,7 @@
 <?php require_once __DIR__ . '/config.php';
 session_start();
+require_once __DIR__ . '/permisos.php';
+guardia_endpoint_auto();
 $id_usuario = $_SESSION['id_usr'];
 
 header('Content-Type: application/json');
