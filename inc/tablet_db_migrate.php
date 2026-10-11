@@ -1,8 +1,8 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 if (empty($_SESSION['ingress']) || $_SESSION['type'] !== 'admin') die('No autorizado');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 if ($conn->connect_error) die('Error DB: ' . $conn->connect_error);
 $conn->set_charset('utf8mb4');
 $conn->query("SET NAMES utf8mb4");

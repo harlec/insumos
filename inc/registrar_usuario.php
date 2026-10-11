@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -19,9 +19,8 @@ $mensajeError = 'hasta aca bien';
 	$tablet_mode = isset($_POST['tablet_mode']) ? 1 : 0;
 	//$tienda = $_POST['tienda'];
 
-	$pepper = 'c1isvFdxMDdmjOlvxpecFw';
-	$pwd = $password;
-	$pwd_peppered = hash_hmac("sha256", $pwd, $pepper);
+		$pwd = $password;
+	$pwd_peppered = hash_clave($pwd);
 
 	//verificar si usuario existe
 	$usuarios = Sdba::table('usuarios');

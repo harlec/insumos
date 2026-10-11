@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Guarda (reemplaza) los días de descanso programados de un empleado para un mes
 // dado: borra los descansos existentes de ese empleado dentro del mes y vuelve a
 // insertar los días seleccionados en el calendario. Espejo de inc/registrar_asistencia.php.
@@ -16,7 +16,7 @@ if (!isset($_SESSION['id_usr'])) {
 
 include('sdba/sdba.php');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

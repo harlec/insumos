@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 ob_start();
 ini_set('display_errors', '0');
 error_reporting(0);
@@ -23,7 +23,7 @@ if ($id_pago <= 0 || !in_array($metodo_nuevo, $metodos_validos, true) || $monto_
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

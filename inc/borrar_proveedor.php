@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Borrado suave del proveedor (estado='0'), igual que ventas/compras: nunca se elimina
 // físicamente para no romper el historial de compras que ya lo referencian.
 session_start();
@@ -15,7 +15,7 @@ if ($id <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Crea un periodo de planilla y genera automáticamente una línea de planilla_detalle
 // por cada empleado activo, con el sueldo del periodo (sueldo_mensual/dias_mes_referencia
 // * dias del periodo) y, por cada día con tardanza registrada en Asistencia dentro del
@@ -36,7 +36,7 @@ if (strtotime($fecha_fin) < strtotime($fecha_inicio)) {
 
 $dias = (int) round((strtotime($fecha_fin) - strtotime($fecha_inicio)) / 86400) + 1;
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

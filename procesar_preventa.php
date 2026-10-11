@@ -1,9 +1,9 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 
 $id_preventa = (int)($_GET['id'] ?? 0);
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $stmt = $conn->prepare("

@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Agrega una línea de descuento (fecha + importe) a un empleado dentro de una
 // planilla ya generada. Calco de inc/registrar_pago_compra.php.
 ob_start();
@@ -27,7 +27,7 @@ if ($id_detalle <= 0 || !$tipo || $importe <= 0 || !preg_match('/^\d{4}-\d{2}-\d
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

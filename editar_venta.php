@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 session_start();
 $usuario = $_SESSION['usuario'];
 $tienda = $_SESSION['tienda'];
@@ -49,7 +49,7 @@ $detalle_actual = $detalle_venta->get();
 $variante_precios = [];
 if (!empty($detalle_actual)) {
     $id_vps = array_unique(array_column($detalle_actual, 'id_vp'));
-    $conn_vp = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+    $conn_vp = db_connect();
     $conn_vp->set_charset('utf8');
     $ids_str = implode(',', array_map('intval', $id_vps));
     $vp_result = $conn_vp->query("SELECT id_vp, precio_vp, cantidad_vp FROM variante_p WHERE id_vp IN ($ids_str)");

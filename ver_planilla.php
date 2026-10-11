@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type']=='operador') {
 	header("Location: dashboard.php");
@@ -6,7 +6,7 @@ if ($_SESSION['type']=='operador') {
 
 $id_periodo = intval($_GET['id'] ?? 0);
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $rp = $conn->query("SELECT id_periodo, fecha_inicio, fecha_fin, dias, estado FROM planilla_periodos WHERE id_periodo = $id_periodo");

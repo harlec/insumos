@@ -1,11 +1,11 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 // Vista temporal, sin link en ningún menú — accesible solo por URL directa.
 // Objetivo: ver qué variantes de qué productos todavía no tienen el precio de costo
 // (precioc_vp) cargado, para poder ir completándolos. Se puede borrar cuando ya no haga falta.
 include('inc/control.php');
 include('inc/sdba/sdba.php');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $datos = '';

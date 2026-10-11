@@ -1,10 +1,10 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type']=='operador') {
     header("Location: dashboard.php");
     exit;
 }
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 $anios = [];
 $r = $conn->query("SELECT DISTINCT YEAR(fecha_ope) AS a FROM ventas WHERE fecha_ope IS NOT NULL ORDER BY a DESC");

@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type']=='operador') {
 	header("Location: dashboard.php");
@@ -6,7 +6,7 @@ if ($_SESSION['type']=='operador') {
 
 $id_detalle = intval($_GET['id_detalle'] ?? 0);
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $r = $conn->query("

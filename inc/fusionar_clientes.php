@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Fusiona clientes duplicados en un cliente principal: las ventas y preventas del duplicado
 // pasan al principal y el duplicado queda registrado como fusionado en cliente_fusiones. No se borra nada; cada
 // fusión queda registrada en cliente_fusiones y se puede deshacer.
@@ -24,7 +24,7 @@ if ($principal <= 0 || !$dups) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['ok' => false, 'mensaje' => 'DB: ' . $conn->connect_error]);

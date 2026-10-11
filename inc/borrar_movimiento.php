@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Solo se puede borrar un movimiento mientras siga pendiente (no aplicado a ninguna
 // planilla todavía) - una vez aplicado, se borra como cualquier otro descuento desde
 // ver_planilla_detalle.php (inc/borrar_planilla_descuento.php).
@@ -16,7 +16,7 @@ if ($id <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

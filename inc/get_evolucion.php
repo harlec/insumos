@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Evolución de ventas por mes o por semana, agrupada por categoría o por producto.
 // Solo lectura. Misma convención que get_reporte_categorias.php: ventas no anuladas (estado != 2),
 // fecha de la venta = v.fecha_ope, y categorías agrupadas por NOMBRE (la tabla categorias tiene duplicados).
@@ -14,7 +14,7 @@ if (!isset($_SESSION['id_usr']) || ($_SESSION['type'] ?? '') === 'operador') {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['ok' => false]);

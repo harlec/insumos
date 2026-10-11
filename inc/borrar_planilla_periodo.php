@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Borra un periodo de planilla completo: sus descuentos, sus líneas de detalle por
 // empleado, y el periodo en sí. Solo se permite mientras el periodo sigue 'abierto'
 // (igual que inc/registrar_planilla_descuento.php bloquea agregar descuentos a un
@@ -17,7 +17,7 @@ if ($id_periodo <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

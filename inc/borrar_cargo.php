@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Borrado suave (estado='0'), mismo patrón que inc/borrar_producto.php.
 session_start();
 header('Content-Type: application/json');
@@ -14,7 +14,7 @@ if ($id <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

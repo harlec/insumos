@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type']=='operador') {
 	header("Location: dashboard.php");
@@ -7,7 +7,7 @@ if ($_SESSION['type']=='operador') {
 $mes = isset($_GET['mes']) && preg_match('/^\d{4}-\d{2}$/', $_GET['mes']) ? $_GET['mes'] : date('Y-m');
 $id_empleado_sel = isset($_GET['id_empleado']) ? intval($_GET['id_empleado']) : 0;
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $empleados_rows = $conn->query("SELECT id_empleado, nombres, apellidos, cargo FROM empleados WHERE estado = '1' ORDER BY nombres, apellidos");

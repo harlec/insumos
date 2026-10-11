@@ -1,6 +1,6 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
-$conn_tmp = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn_tmp = db_connect();
 $where_u = ($_SESSION['type'] == 'admin') ? "" : "AND usuario = " . intval($_SESSION['id_usr']);
 $r_tmp = $conn_tmp->query("SELECT COUNT(*) as c FROM ventas WHERE estado != '2' $where_u");
 $total_count = $r_tmp ? intval($r_tmp->fetch_assoc()['c']) : 0;

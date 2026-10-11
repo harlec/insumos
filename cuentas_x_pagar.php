@@ -1,11 +1,11 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 include_once('inc/medios_pago.php');
 include('inc/sdba/sdba.php'); // include main file
 
 // Igual criterio que antes: el saldo se calcula desde los pagos registrados
 // (compra_pagos), no desde un campo "pagado" en compras.
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $hoy = date('Y-m-d');

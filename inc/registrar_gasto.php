@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Registra un gasto (fijo, diario o puntual) en la tabla gastos.
 ob_start();
 ini_set('display_errors', '0');
@@ -30,7 +30,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha) || !in_array($tipo, $tipos_vali
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['ok' => false, 'mensaje' => 'DB: ' . $conn->connect_error]);

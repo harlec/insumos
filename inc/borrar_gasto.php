@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Anula un gasto (no se borra físicamente, queda estado = 2 y deja de contar en el balance).
 ob_start();
 ini_set('display_errors', '0');
@@ -18,7 +18,7 @@ if ($id <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['ok' => false, 'mensaje' => 'DB: ' . $conn->connect_error]);

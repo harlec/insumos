@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Asegurar que siempre devolvemos JSON
 header('Content-Type: application/json');
 
@@ -49,7 +49,7 @@ if (isset($_POST) && !empty($_POST)) {
                 // Si es un consumo de abarrotes de un empleado (ver inc/registrar_venta.php),
                 // el movimiento y sus cuotas deben seguir al total de la venta. Si alguna cuota
                 // ya se descontó en una planilla no se puede editar (mismo criterio que anular).
-                $conn_mov = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+                $conn_mov = db_connect();
                 $conn_mov->set_charset('utf8');
                 $id_venta_int = (int) $id_venta;
                 $rm  = $conn_mov->query("SELECT id_movimiento FROM movimientos_empleado WHERE id_venta = $id_venta_int");

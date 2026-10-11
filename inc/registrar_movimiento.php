@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Registra un adelanto en efectivo a un empleado, con su fecha real, dividido en una o
 // varias cuotas (montos[]): cada cuota se descuenta en una planilla distinta, en el
 // orden en que se vayan generando (ver inc/registrar_planilla_periodo.php), sin importar
@@ -44,7 +44,7 @@ if (count($montos) > 24) {
 $importe = round(array_sum($montos), 2);
 $partes  = count($montos);
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

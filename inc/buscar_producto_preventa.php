@@ -1,11 +1,11 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 require_once __DIR__ . '/preventa_control.php';
 preventa_requerir_json();
 
 header('Content-Type: application/json');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $q = trim($_GET['q'] ?? '');

@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type'] !== 'admin') { header("Location: dashboard.php"); exit; }
 include('inc/sdba/sdba.php');
@@ -18,7 +18,7 @@ $factor_tardanza      = get_config('planilla_factor_tardanza', '2');
 $dias_mes_referencia  = get_config('planilla_dias_mes_referencia', '30');
 $rmv                  = get_config('planilla_rmv', '1130');
 
-$conn_cargos = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn_cargos = db_connect();
 $conn_cargos->set_charset('utf8');
 $cargos_filas = '';
 $rc = $conn_cargos->query("SELECT id_cargo, nombre FROM cargos WHERE estado = '1' ORDER BY nombre");

@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Registra un abono (pago parcial o total) contra una compra pendiente, para
 // inc/get o la pantalla cuentas_x_pagar.php. Espejo de inc/registrar_pago.php (ventas).
 ob_start();
@@ -26,7 +26,7 @@ if ($id_compra <= 0 || $monto <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

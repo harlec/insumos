@@ -1,11 +1,11 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Un cliente "fusionado" es un duplicado que ya se unió a otro cliente (principal).
 // La fuente de verdad es la tabla cliente_fusiones (no clientes.estado). Si esa tabla
 // aún no existe (migración sin correr), todo sigue funcionando como si no hubiera fusiones.
 
 function cliente_conn_helper()
 {
-    $c = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+    $c = db_connect();
     $c->set_charset('utf8');
     return $c;
 }

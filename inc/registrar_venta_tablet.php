@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 if (empty($_SESSION['ingress'])) {
     echo json_encode(['respuesta' => false, 'mensaje' => 'Sin sesión']);
@@ -42,7 +42,7 @@ if (!empty($_POST)) {
 
     if (!empty($fecha) && !empty($id_p) && !empty($total_pre)) {
 
-        $conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+        $conn = db_connect();
         $conn->set_charset('utf8');
         $conn->begin_transaction();
 

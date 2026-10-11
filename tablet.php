@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 // ── Sesión & control ────────────────────────────────────────
 session_start();
 if (empty($_SESSION['ingress'])) {
@@ -10,7 +10,7 @@ if (empty($_SESSION['ingress'])) {
 require_once 'inc/sdba/sdba.php';
 require_once 'inc/tablet_config.php'; // solo para constantes TABLET_STORE_*
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 // Cargar tabs y grupos desde la BD

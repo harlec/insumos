@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Guarda (upsert) la asistencia diaria de uno o varios empleados: hora real de
 // entrada/salida, calculando minutos de tardanza contra el horario programado
 // del empleado y las horas trabajadas. Espejo de inc/registrar_pago_compra.php.
@@ -18,7 +18,7 @@ include('sdba/sdba.php');
 include('config_facturacion.php');
 include('horario_helpers.php');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

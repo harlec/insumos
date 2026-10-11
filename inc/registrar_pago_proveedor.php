@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Abona un monto contra el total adeudado a UN proveedor (varias compras a la
 // vez), repartiendo en cascada FIFO: se cancela primero la factura con
 // fecha_compromiso_pago (o fecha) más antigua, y el resto pasa a la siguiente.
@@ -29,7 +29,7 @@ if ($id_proveedor <= 0 || $monto <= 0) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

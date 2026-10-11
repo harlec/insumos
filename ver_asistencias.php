@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/inc/config.php';
 include('inc/control.php');
 if ($_SESSION['type']=='operador') {
 	header("Location: dashboard.php");
@@ -10,7 +10,7 @@ $hoy = date('Y-m-d');
 $fechaini = isset($_GET['fechaini']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechaini']) ? $_GET['fechaini'] : date('Y-m-d', strtotime('-6 days'));
 $fechafin = isset($_GET['fechafin']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechafin']) ? $_GET['fechafin'] : $hoy;
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 $ini_esc = $conn->real_escape_string($fechaini);

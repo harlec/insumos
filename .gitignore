@@ -10,3 +10,7 @@ Thumbs.db
 
 # Dump de produccion de Renacer (contiene hashes de claves): no versionar
 /sql/admin_renacer.sql
+
+# Configuracion local generada por el instalador (credenciales)
+/config/config.php
+/config/instalado.lock

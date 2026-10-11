@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Crea un periodo de balance con su caja inicial.
 ob_start();
 ini_set('display_errors', '0');
@@ -30,7 +30,7 @@ if (strtotime($fin) < strtotime($ini)) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['ok' => false, 'mensaje' => 'DB: ' . $conn->connect_error]);

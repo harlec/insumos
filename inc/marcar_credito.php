@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Marca (o quita) una venta pendiente como "a crédito": el cliente pagará después,
 // en la fecha indicada. Mientras esté marcada, sale de la cola normal de cobro
 // (inc/get_pagos_pendientes.php) y aparece en la pestaña "Crédito".
@@ -28,7 +28,7 @@ if ($accion === 'marcar' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

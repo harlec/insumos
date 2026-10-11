@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 if (!isset($_SESSION['id_usr'])) {
     http_response_code(403);
@@ -15,7 +15,7 @@ $anio = isset($_GET['anio']) ? intval($_GET['anio'])                  : intval(d
 $desde = sprintf('%04d-%02d-01', $anio, $mes);
 $hasta = date('Y-m-d', strtotime($desde . ' +1 month'));
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

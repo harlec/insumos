@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Deshace una fusión: devuelve al duplicado sus ventas/preventas y lo reactiva.
 ob_start();
 ini_set('display_errors', '0');
@@ -13,7 +13,7 @@ if (!isset($_SESSION['id_usr']) || ($_SESSION['type'] ?? '') !== 'admin') {
 }
 
 $id = intval($_POST['id'] ?? 0);
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($id <= 0 || $conn->connect_error) {
     echo json_encode(['ok' => false, 'mensaje' => 'Solicitud inválida']);

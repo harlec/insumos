@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 if (!isset($_SESSION['id_usr'])) {
     http_response_code(403);
@@ -9,7 +9,7 @@ $id_usuario = intval($_SESSION['id_usr']);
 $es_admin   = ($_SESSION['type'] == 'admin');
 $where_user = $es_admin ? "" : "AND v.usuario = $id_usuario";
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

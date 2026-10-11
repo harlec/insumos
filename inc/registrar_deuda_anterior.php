@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Registra una deuda con un proveedor previa a usar el sistema: se guarda como
 // una fila más en `compras` (a crédito, marcada con deuda_anterior='1') pero
 // sin líneas de detalle_compras ni movimiento de stock, porque no representa
@@ -33,7 +33,7 @@ if ($observacion === '') {
     $observacion = 'Deuda anterior al sistema';
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {

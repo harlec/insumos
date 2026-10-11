@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -13,10 +13,8 @@ if (isset($_POST) && !empty($_POST)) {
 
 		$usuario = $_POST['usuario'];
 		$pwd = $_POST['pass'];
-		$pepper = 'c1isvFdxMDdmjOlvxpecFw';
-		$pass = hash_hmac("sha256", $pwd, $pepper);
+				$pass = hash_clave($pwd);
 		// $usuario = 'harlec';
-		// $pass = 'ikm169uhn';
 
 		$users = Sdba::table('usuarios');
 		$users->where('usuario', $usuario)->and_where('clave =',$pass);

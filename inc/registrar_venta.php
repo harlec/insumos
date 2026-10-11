@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 $id_usuario = $_SESSION['id_usr'];
 
@@ -27,7 +27,7 @@ if (isset($_POST) && !empty($_POST)) {
 
     if (!empty($fecha) && !empty($id_p) && !empty($total_pre) && (!$es_empleado || $id_empleado > 0)) {
 
-        $conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+        $conn = db_connect();
         $conn->set_charset('utf8');
         $conn->begin_transaction();
 

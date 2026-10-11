@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 ob_start();
 ini_set('display_errors', '0');
 error_reporting(0);
@@ -8,7 +8,7 @@ if (empty($_SESSION['ingress']) || $_SESSION['type'] !== 'admin') {
 }
 header('Content-Type: application/json');
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 if ($conn->connect_error) {
     ob_clean(); echo json_encode(['ok'=>false,'msg'=>'DB: '.$conn->connect_error]); exit;
 }

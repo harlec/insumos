@@ -11,7 +11,19 @@ Sistema de gestión y punto de venta (POS) de **Distribuidora Renacer**. Aplicac
 - **IA:** pedidos interpretados por IA (`pedido_ia.php`, `inc/ia_helper.php`).
 - **Migraciones SQL:** carpeta `sql/`.
 
-## Módulos
+## Instalación
+
+1. Sube el código a un servidor con PHP 7.4+ (extensión `mysqli`) y MySQL/MariaDB. La carpeta `config/` debe ser escribible.
+2. Abre `/instalar.php`: pide los datos de la base y del primer administrador, crea las tablas (`sql/00_*.sql` y `sql/01_*.sql`), escribe `config/config.php` y se bloquea al terminar.
+3. Entra con ese administrador. Más tarde, cualquier `sql/NN_nombre.sql` nuevo se aplica una sola vez con `migrar_aplicar()` (`inc/migrar.php`).
+
+Las credenciales viven solo en `config/config.php` (fuera de git; ver `config/config.example.php`). Los scripts de `sql/legacy_renacer/` son las migraciones del sistema original, ya incluidas en `00_schema_insumos.sql`.
+
+## Módulos y permisos
+
+Cada módulo se activa o apaga globalmente (tabla `modulos`) y cada rol recibe permisos de ver, crear, editar y anular por módulo (`rol_permisos`). El menú y el acceso a las páginas salen de ahí (`inc/permisos.php`, mapa de páginas en `inc/permisos_paginas.php`).
+
+## Módulos (sistema original)
 
 | Módulo | Páginas principales |
 |---|---|

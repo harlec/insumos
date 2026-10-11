@@ -1,4 +1,4 @@
-﻿<?php
+﻿<?php require_once __DIR__ . '/config.php';
 include('sdba/sdba.php');
 include('config_facturacion.php');
 include('nubefact_correlativo.php');
@@ -117,7 +117,7 @@ $serie = get_config('serie_factura', 'F003');
 // Verificar contra Nubefact cuál es el siguiente correlativo realmente libre para esta
 // serie, en vez de mandar "numero": null (el manual de Nubefact indica que es obligatorio,
 // y confiar en su auto-asignación es lo que probablemente causó el correlativo faltante).
-$conn_corr = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn_corr = db_connect();
 $conn_corr->set_charset('utf8');
 $numero_esperado = numero_esperado($conn_corr, 'F', $serie);
 $conn_corr->close();

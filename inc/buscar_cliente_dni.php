@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Búsqueda de cliente por DNI para la pantalla de ventas (opcional y no bloqueante).
 //  1) Si ya hay un cliente con ese DNI -> se usa ese.
 //  2) Si no, se consulta el nombre completo en Migo (timeout corto) y se buscan clientes ya
@@ -27,7 +27,7 @@ if (strlen($dni) !== 8) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 if ($conn->connect_error) {
     echo json_encode(['estado' => 'error', 'mensaje' => 'DB']);

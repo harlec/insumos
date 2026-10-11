@@ -1,8 +1,8 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 if (!isset($_SESSION['id_usr'])) { echo '[]'; exit; }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 require_once(__DIR__ . '/cliente_helper.php');

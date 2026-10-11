@@ -3,13 +3,12 @@
 // Si las tablas de sql/01_modulos_permisos.sql aún no existen, se usa el comportamiento anterior
 // (admin ve todo; el resto solo Escritorio, Ventas y Caja).
 
-require_once __DIR__ . '/sdba/sdba_config.php';
+require_once __DIR__ . '/config.php';
 
 function permisos_db() {
 	static $db = false;
 	if ($db === false) {
-		mysqli_report(MYSQLI_REPORT_OFF);
-		$db = @new mysqli(Sdba_config::$dbhost, Sdba_config::$dbuser, Sdba_config::$dbpass, Sdba_config::$dbname);
+		$db = @db_connect();
 		if ($db->connect_errno) { $db = null; }
 		else { $db->set_charset('utf8'); }
 	}

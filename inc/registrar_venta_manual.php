@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Crea una "venta" a partir de líneas armadas a mano en notas_venta.php ("Factura simple"),
 // para poder emitirla luego con el mismo pipeline de facturar.php. A diferencia de
 // inc/registrar_venta_tablet.php, esta NO valida ni descuenta stock (es para casos que no
@@ -31,7 +31,7 @@ if (!empty($_POST)) {
 
     if (!empty($fecha) && !empty($id_p) && !empty($total_pre)) {
 
-        $conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+        $conn = db_connect();
         $conn->set_charset('utf8');
         $conn->begin_transaction();
 

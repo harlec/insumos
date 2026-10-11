@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 session_start();
 header('Content-Type: application/json');
 
@@ -25,7 +25,7 @@ function mensaje_error_subida(int $codigo): string
     }
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 try {

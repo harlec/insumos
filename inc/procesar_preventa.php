@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 ob_start();
 ini_set('display_errors', '0');
 session_start();
@@ -24,7 +24,7 @@ if (!$id_preventa || empty($id_detalle)) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 $conn->begin_transaction();
 

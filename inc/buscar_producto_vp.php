@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/config.php';
 // Fuente de datos para el select2 de "Factura simple" en notas_venta.php.
 // Devuelve presentaciones de producto (variante_p) que calzan con el término buscado,
 // en el formato {results:[{id,text,...}]} que espera select2.
@@ -14,7 +14,7 @@ if (!isset($_SESSION['id_usr'])) {
     exit;
 }
 
-$conn = new mysqli('localhost', 'admin_renacer', 'ikm169uhn', 'admin_renacer');
+$conn = db_connect();
 $conn->set_charset('utf8');
 
 if ($conn->connect_error) {
