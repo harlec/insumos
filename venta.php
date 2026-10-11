@@ -145,12 +145,16 @@ foreach ($empleados_venta_l as $emp) {
 	      		<li >
 	      			<a href="ventas.php">Listar ventas</a>
 	      		</li>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li>
 	      			<a href="notas_venta.php">Facturar</a>
 	      		</li>
+<?php endif; ?>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li>
 	      			<a href="comprobantes.php">Comprobantes</a>
 	      		</li>
+<?php endif; ?>
 	      		<!-- <li>
 	      			<a href="ventap.php">Proforma</a>
 	      		</li>

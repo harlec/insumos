@@ -20,7 +20,7 @@ $openai_api_key = get_config('openai_api_key');
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Configuración Facturación Electrónica – Renacer</title>
+    <title>Configuración Facturación Electrónica</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">

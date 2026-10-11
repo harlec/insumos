@@ -2,7 +2,7 @@
 // ── Sesión & control ────────────────────────────────────────
 session_start();
 if (empty($_SESSION['ingress'])) {
-    header("Location: index.html");
+    header("Location: index.php");
     exit;
 }
 require_once __DIR__ . '/inc/permisos.php';
@@ -117,6 +117,7 @@ foreach ($all_vp as $row) {
 $js_data = json_encode($tabs_data, JSON_UNESCAPED_UNICODE);
 
 $store_name = TABLET_STORE_NAME;
+$ticket_emp = ['nombre' => empresa('empresa_nombre'), 'lineas' => array_slice(empresa_lineas_ticket(), 1), 'lema' => empresa('empresa_lema'), 'gracias' => empresa('empresa_gracias')];
 $user_name  = htmlspecialchars($_SESSION['nombres'] ?? $_SESSION['usuario']);
 $user_id    = (int)($_SESSION['id_usr'] ?? 0);
 ?>
@@ -128,7 +129,7 @@ $user_id    = (int)($_SESSION['id_usr'] ?? 0);
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#111111">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.php">
 <title>POS Tablet – <?= $store_name ?></title>
 <style>
 /* ── Fuentes ──────────────────────────────────────────────── */
@@ -856,8 +857,8 @@ body{
 <div class="modal-ov" id="modal-ticket">
   <div class="ticket-card">
     <div class="tc-hdr">
-      <img src="assets/img/logo_avasa.png" style="width:180px;display:block;margin:0 auto 4px">
-      <p style="font-size:10px;color:#444;margin:0">&ldquo;Y aunque tu principio haya sido pequeño,<br>Tu postrer estado será muy grande&rdquo; Job 8:7</p>
+      <?php if (($logo_t = empresa_logo_url())): ?><img src="<?= htmlspecialchars($logo_t) ?>" style="max-width:180px;max-height:80px;display:block;margin:0 auto 4px"><?php else: ?><h3 style="margin:0 0 4px"><?= htmlspecialchars($store_name) ?></h3><?php endif; ?>
+      <p style="font-size:10px;color:#444;margin:0"><?= htmlspecialchars(implode(' · ', array_slice(empresa_lineas_ticket(), 1))) ?></p>
       <h2 style="margin:6px 0 2px">NOTA VENTA</h2>
       <p id="tc-date" style="margin:0"></p>
     </div>
@@ -871,7 +872,7 @@ body{
     <div style="font-size:10px;margin-top:6px"><b>IMPORTE EN LETRAS: </b><span id="tc-letras"></span></div>
     <div style="font-size:10px;margin-top:4px"><b>VENDEDOR: </b><?= $user_name ?></div>
     <div style="font-size:10px;margin-top:4px"><b>PERSONAL ENTREGA: </b>__________________________</div>
-    <div class="tc-foot">DIOS TE BENDIGA<br>GRACIAS POR TU PREFERENCIA<br><span style="font-size:9px">Todo reclamo deberá realizarse dentro de los 13 días posteriores.</span></div>
+    <div class="tc-foot"><?= htmlspecialchars(empresa('empresa_gracias')) ?></div>
     <div class="tc-actions">
       <button class="btn-imprimir" onclick="printTicket()">🖨️ Imprimir</button>
       <button class="btn-nueva" onclick="closeTicket();clearCart()">✓ Nueva venta</button>
@@ -1317,6 +1318,7 @@ function buildTicketText(items){
 
   // Comandos ESC/POS codificados como %XX
   // Chrome preserva %XX en opaque paths; RawBT los decodifica igual que %20→espacio
+  const EMP = <?= json_encode($ticket_emp, JSON_UNESCAPED_UNICODE) ?>;
   const I  = '%1B%40';          // Init impresora
   const CA = '%1B%61%01';     // Centro
   const LA = '%1B%61%00';     // Izquierda
@@ -1340,11 +1342,11 @@ function buildTicketText(items){
 
   // ── Header grande centrado ──
   t += CA + DO + BO;
-  t += 'DISTRIBUIDORA RENACER' + LF;
+  t += asc(EMP.nombre).substring(0, 21) + LF;
   t += BF + DF;
-  t += '"Y aunque tu principio haya sido' + LF;
-  t += 'pequeno, tu postrer estado sera' + LF;
-  t += 'muy grande" Job 8:7' + LF + LF;
+  EMP.lineas.forEach(function(l){ t += asc(l).substring(0, W) + LF; });
+  if (EMP.lema) t += asc(EMP.lema).substring(0, W) + LF;
+  t += LF;
   t += BO + 'NOTA VENTA' + BF + LF + LF;
 
   // ── Datos ──
@@ -1379,9 +1381,7 @@ function buildTicketText(items){
 
   // ── Pie centrado ──
   t += CA;
-  t += 'DIOS TE BENDIGA'            + LF;
-  t += 'GRACIAS POR TU PREFERENCIA' + LF;
-  t += 'Reclamos dentro de 13 dias.' + LF;
+  t += asc(EMP.gracias) + LF;
   t += LF + LF + LF;
 
   // ── Corte de papel ──

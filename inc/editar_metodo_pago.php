@@ -13,7 +13,8 @@ if (!isset($_SESSION['id_usr'])) {
     exit;
 }
 
-$metodos_validos = ['efectivo', 'yape', 'plin', 'bbva', 'yape_susan', 'tarjeta'];
+require_once __DIR__ . '/medios_pago.php';
+$metodos_validos = array_keys(medios_seleccionables());
 
 $id_pago = intval($_POST['id_pago'] ?? 0);
 $metodo_nuevo = $_POST['metodo'] ?? '';

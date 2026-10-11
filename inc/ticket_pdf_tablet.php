@@ -8,6 +8,7 @@ require_once __DIR__ . '/dompdf/autoload.inc.php';
 require_once __DIR__ . '/vendor/autoload.php';
 use Luecano\NumeroALetras\NumeroALetras;
 use Dompdf\Dompdf;
+require_once __DIR__ . '/empresa.php';
 
 $data     = json_decode(file_get_contents('php://input'), true);
 $items    = $data['items']    ?? [];
@@ -33,12 +34,6 @@ foreach ($items as $ci) {
 
 $tot_fmt  = number_format($grand, 2, '.', ',');
 
-$logo_path = realpath(__DIR__ . '/../assets/img/logo_avasa.png');
-$logo_b64  = base64_encode(file_get_contents($logo_path));
-$logo_src  = 'data:image/png;base64,' . $logo_b64;
-
-$addr_row  = $addr  ? "<h6>$addr</h6>"       : '';
-$phone_row = $phone ? "<h6>Tel: $phone</h6>" : '';
 
 ob_start();
 ?>
@@ -59,15 +54,10 @@ ob_start();
         margin-top: 0.4cm;
     }
 </style>
-<img style="width:230px; text-align:center;" src="<?= $logo_src ?>">
-<h6 style="margin-top:0px;">"Y aunque tu principio haya sido pequeño,
-Tu postrer estado será muy grande"</h6>
-<h6 style="text-align:right; margin-top:-20px;">Job 8: 7</h6>
+<?= empresa_cabecera_html(230) ?>
 <h5 style="text-align:center;"><b>NOTA VENTA</b></h5>
 <h6>FECHA: <?= $fecha ?><br>CLIENTE: <?= $cliente ?>
 </h6>
-<?= $addr_row ?>
-<?= $phone_row ?>
 <hr>
 <table>
     <thead>
@@ -93,10 +83,7 @@ Tu postrer estado será muy grande"</h6>
         </tr>
     </tbody>
 </table>
-<h6 style="text-align:center;">DIOS TE BENDIGA<br>
-    GRACIAS POR TU PREFERENCIA<br>
-    Todo reclamo deberá realizarse dentro de los
-    13 días posteriores a la emisión de la boleta.</h6>
+<h6 style="text-align:center;"><?= empresa_h(empresa('empresa_gracias')) ?></h6>
 <?php
 $html = ob_get_clean();
 

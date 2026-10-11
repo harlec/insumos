@@ -59,7 +59,9 @@ if ($r) {
 }
 
 // Resumen de lo ya cobrado hoy, por medio de pago
-$resumen = ['efectivo' => 0, 'yape' => 0, 'plin' => 0, 'bbva' => 0, 'yape_susan' => 0, 'tarjeta' => 0, 'total' => 0, 'ventas_pasadas' => 0];
+require_once __DIR__ . '/medios_pago.php';
+$resumen = ['total' => 0, 'ventas_pasadas' => 0];
+foreach (medios_todos() as $k => $m) { $resumen[$k] = 0; }
 $rr = $conn->query("SELECT metodo, SUM(monto) AS total FROM venta_pagos WHERE DATE(fecha) = CURDATE() GROUP BY metodo");
 if ($rr) {
     while ($row = $rr->fetch_assoc()) {

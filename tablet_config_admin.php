@@ -5,7 +5,7 @@ include('inc/control.php');
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Configuración Tablet – Renacer</title>
+    <title>Configuración Tablet</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">

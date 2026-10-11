@@ -12,7 +12,7 @@ $fusionados = cliente_ids_fusionados($conn);
 $fusionados_idx = array_flip($fusionados);
 
 // El cálculo se guarda 15 minutos (se borra solo al fusionar o deshacer); "Recalcular" lo fuerza.
-$cache = sys_get_temp_dir() . '/renacer_dup_clientes.cache';
+$cache = sys_get_temp_dir() . '/insumos_dup_clientes.cache';
 $grupos = null;
 if (empty($_GET['recalcular']) && is_file($cache) && time() - filemtime($cache) < 900) {
 	$grupos = @unserialize((string)file_get_contents($cache), ['allowed_classes' => false]);

@@ -64,12 +64,16 @@ foreach ($ventas_list as $value) {
 	      		<li >
 	      			<a href="ventas.php">Listar ventas</a>
 	      		</li>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li>
 	      			<a href="notas_venta.php">Facturar</a>
 	      		</li>
+<?php endif; ?>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li>
 	      			<a href="comprobantes.php">Comprobantes</a>
 	      		</li>
+<?php endif; ?>
 	      	</ul>
 	      </div>
 	    </nav>
@@ -106,8 +110,10 @@ foreach ($ventas_list as $value) {
 											    <center>
 											    	
 												    <a target="_blank" class="btn btn-primary btn-lg <?php echo $ocultar;?>" href="recibo.php?id=<?php echo $id; ?>">Recibo</a>
+												    <?php if (puede('facturacion', 'crear')): ?>
 												    <button type="button" class="btn btn-success btn-lg <?php echo $ocultar;?>" id="btn-ver-factura" data-href="factura.php?ids=<?php echo $id; ?>"><i class="fas fa-file-invoice-dollar"></i> Factura</button>
 												    <button type="button" class="btn btn-danger btn-lg <?php echo $ocultar;?>" id="btn-ver-boleta" data-href="boleta.php?ids=<?php echo $id; ?>"><i class="fab fa-bitcoin"></i> Boleta</button>
+												    <?php endif; ?>
 												</center>
 											</div>
 										</div>

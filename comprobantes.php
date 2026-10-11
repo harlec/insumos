@@ -54,12 +54,16 @@ $meses = [
 	      		<li >
 	      			<a href="ventas.php">Listar ventas</a>
 	      		</li>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li>
 	      			<a href="notas_venta.php">Facturar</a>
 	      		</li>
+<?php endif; ?>
+<?php if (puede('facturacion', 'ver')): ?>
 	      		<li class="active">
 	      			<a href="comprobantes.php">Comprobantes</a>
 	      		</li>
+<?php endif; ?>
 	      	</ul>
 	      </div>
 	    </nav>

@@ -48,6 +48,6 @@ foreach ($compol as  $value) {
 
 
 
-echo "<center> <a href='https://ferreteria2.harlec.com.pe/descargar.php'><b>Descargar comprobantes</b></a></center>";
+echo "<center> <a href='descargar.php'><b>Descargar comprobantes</b></a></center>";
  
 ?>

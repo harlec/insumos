@@ -14,7 +14,6 @@ if (isset($_POST) && !empty($_POST)) {
 		$usuario = $_POST['usuario'];
 		$pwd = $_POST['pass'];
 				$pass = hash_clave($pwd);
-		// $usuario = 'harlec';
 
 		$users = Sdba::table('usuarios');
 		$users->where('usuario', $usuario)->and_where('clave =',$pass);

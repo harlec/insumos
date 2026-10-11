@@ -8,6 +8,7 @@ header('Content-Type: application/json');
 ob_start();
 ini_set('display_errors','0');
 
+require_once __DIR__ . '/empresa.php';
 $data     = json_decode(file_get_contents('php://input'), true);
 $items    = $data['items']    ?? [];
 $grand    = floatval($data['grand']    ?? 0);
@@ -43,16 +44,16 @@ $sep = str_repeat('-', 32) . $LF;
 $out  = $init;
 $out .= $center;
 
-// Nombre del negocio grande
+// Nombre del negocio grande y datos de la empresa
+$lineas_emp = empresa_lineas_ticket();
 $out .= $dbl_on . $bold_on;
-$out .= iconv('UTF-8','CP850//TRANSLIT','Distribuidora Renacer') . $LF;
+$out .= iconv('UTF-8','CP850//TRANSLIT', mb_substr(array_shift($lineas_emp), 0, 16)) . $LF;
 $out .= $bold_off . $dbl_off;
-
-// Cita bíblica
 $out .= $ESC . "a\x01";
-$out .= iconv('UTF-8','CP850//TRANSLIT','"Y aunque tu principio haya sido pequeno,') . $LF;
-$out .= iconv('UTF-8','CP850//TRANSLIT','Tu postrer estado sera muy grande"') . $LF;
-$out .= iconv('UTF-8','CP850//TRANSLIT','Job 8:7') . $LF;
+foreach ($lineas_emp as $le) {
+    foreach (str_split(iconv('UTF-8','CP850//TRANSLIT',$le), 32) as $trozo) { $out .= $trozo . $LF; }
+}
+if (empresa('empresa_lema') !== '') { $out .= iconv('UTF-8','CP850//TRANSLIT', empresa('empresa_lema')) . $LF; }
 
 $out .= $LF;
 $out .= $bold_on . iconv('UTF-8','CP850//TRANSLIT','NOTA VENTA') . $bold_off . $LF;
@@ -105,15 +106,13 @@ $out .= $sep;
 
 // Pie
 $out .= $center;
-$out .= iconv('UTF-8','CP850//TRANSLIT','DIOS TE BENDIGA') . $LF;
-$out .= iconv('UTF-8','CP850//TRANSLIT','GRACIAS POR TU PREFERENCIA') . $LF;
-$out .= iconv('UTF-8','CP850//TRANSLIT','Reclamos dentro de 13 dias.') . $LF;
+$out .= iconv('UTF-8','CP850//TRANSLIT', empresa('empresa_gracias')) . $LF;
 $out .= $LF . $LF . $LF;
 $out .= $cut;
 
 // ── Guardar en archivo temporal y devolver token ───────────
 $token = bin2hex(random_bytes(16));
-$file  = sys_get_temp_dir() . '/renacer_ticket_' . $token . '.bin';
+$file  = sys_get_temp_dir() . '/insumos_ticket_' . $token . '.bin';
 file_put_contents($file, $out);
 
 ob_clean();

@@ -44,7 +44,7 @@ try {
 
     $conn->query("UPDATE cliente_fusiones SET deshecha = 1 WHERE id_fusion = $id");
     $conn->commit();
-    @unlink(sys_get_temp_dir() . '/renacer_dup_clientes.cache');
+    @unlink(sys_get_temp_dir() . '/insumos_dup_clientes.cache');
     echo json_encode(['ok' => true]);
 } catch (Exception $e) {
     $conn->rollback();

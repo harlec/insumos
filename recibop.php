@@ -3,6 +3,7 @@ ob_start();
 require_once 'inc/dompdf/autoload.inc.php';
 require 'inc/vendor/autoload.php';
 use Luecano\NumeroALetras\NumeroALetras;
+require_once __DIR__ . '/inc/empresa.php';
 
 include('inc/control.php');
 include('inc/sdba/sdba.php'); // include main file
@@ -89,12 +90,7 @@ $facturan = 0;
 	}
 </style>	<h5 style="text-align:center;"><b>PROFORMA</b>
 			</h5>
-			<h5 style="text-align:center;">Ferreteros y Constructores<br> "EL TORITO DE ORO"</h5>
-			<h6 style="text-align:center;"><b>ENVIROMENTAL SENSE CONSULTING S.R.L. - ENSCO S.R.L.</b><br>
-				Mz-A sublote-01 Urb San José - Espaldas del Grifo Repsol - Barranca<br>
-				986362380 - 992770595 - 986165174 <br>
-				RUC 20600064879
-			</h6>
+			<?= empresa_cabecera_html(200) ?>
 			<h6>FECHA: <?php echo $fechita; ?><br><?php echo $tipo; ?><br><?php echo $clsn; ?>	
 			</h6>
 			<hr>
@@ -119,7 +115,7 @@ $facturan = 0;
 						</tr>
 		    	</tbody>
 		    </table>
-		    <h6 style="text-align:center;">GRACIAS X SU PREFERENCIA</h6>
+		    <h6 style="text-align:center;"><?= empresa_h(empresa('empresa_gracias')) ?></h6>
 
 <?php
 use Dompdf\Dompdf;

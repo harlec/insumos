@@ -2,6 +2,7 @@
 include('inc/control.php');
 require_once __DIR__ . '/inc/sdba/sdba.php';
 require_once __DIR__ . '/inc/config_facturacion.php';
+require_once __DIR__ . '/inc/empresa.php';
 require_once __DIR__ . '/inc/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
@@ -121,7 +122,7 @@ ob_start();
     @page { margin: 1cm; }
 </style>
 
-<div class="titulo-principal">FAMILIA RENACER</div>
+<div class="titulo-principal"><?= htmlspecialchars(mb_strtoupper(empresa('empresa_nombre'))) ?></div>
 
 <table class="datos-emp">
     <tr><td class="label">NOMBRE Y APELLIDOS</td><td><?= htmlspecialchars($nombreCompleto) ?></td></tr>

@@ -125,6 +125,7 @@ $TABLET_TABS = [
 /**
  * Nombre del negocio que aparece en el ticket impreso
  */
-define('TABLET_STORE_NAME', 'Distribuidora Renacer');
-define('TABLET_STORE_ADDRESS', ''); // opcional: dirección en el ticket
-define('TABLET_STORE_PHONE', '');   // opcional: teléfono en el ticket
+require_once __DIR__ . '/empresa.php'; // se editan en Configuración → Datos de la empresa
+define('TABLET_STORE_NAME', empresa('empresa_nombre'));
+define('TABLET_STORE_ADDRESS', empresa('empresa_direccion'));
+define('TABLET_STORE_PHONE', empresa('empresa_telefono'));

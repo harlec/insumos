@@ -21,7 +21,8 @@ body.esc button{font-family:inherit}
 .esc-header{background:#fff;display:flex;align-items:stretch;gap:20px;padding:0 24px;height:72px;border-bottom:3px solid var(--primary);position:sticky;top:0;z-index:100}
 .esc-brand,.esc-brand:hover{display:flex;flex-direction:column;justify-content:center;line-height:1;color:var(--ink)!important;flex-shrink:0}
 .esc-brand span{font-size:12px;letter-spacing:.04em}
-.esc-brand b{font-size:24px;font-weight:700}
+.esc-brand b{font-size:24px;font-weight:700;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.esc-brand-img{display:block;max-height:46px;max-width:170px;object-fit:contain}
 .esc-nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0}
 .esc-nav::-webkit-scrollbar{display:none}
 .esc-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 4px;width:86px;flex:0 0 86px;color:#6b665f!important;white-space:nowrap}

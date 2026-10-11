@@ -77,7 +77,7 @@ try {
         if (!$st->execute()) throw new Exception($conn->error);
     }
     $conn->commit();
-    @unlink(sys_get_temp_dir() . '/renacer_dup_clientes.cache');
+    @unlink(sys_get_temp_dir() . '/insumos_dup_clientes.cache');
     echo json_encode(['ok' => true]);
 } catch (Exception $e) {
     $conn->rollback();

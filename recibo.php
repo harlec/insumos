@@ -5,6 +5,7 @@ require 'inc/vendor/autoload.php';
 use Luecano\NumeroALetras\NumeroALetras;
 
 include('inc/control.php');
+require_once __DIR__ . '/inc/empresa.php';
 include('inc/sdba/sdba.php'); // include main file
 
 
@@ -165,10 +166,7 @@ $facturan = 0;
 		margin-top: 0.4cm;
 	}
 </style>	
-<img style="width:230px; text-align:center;" src="assets/img/logo_avasa.png">
-<h6 style="margin-top:0px;">“Y aunque tu principio haya sido pequeño,
-Tu postrer estado será muy grande”</h6>
-<h6 style="text-align:right; margin-top:-20px;">Job 8: 7</h6>
+<?= empresa_cabecera_html(230) ?>
 <h5 style="text-align:center;"><b>NOTA VENTA Nº <?= $id ?></b></h5>
 			<h6>FECHA: <?php echo $fechita; ?><br>CLIENTE: <?php echo $clsn; ?>	
 			</h6>
@@ -213,10 +211,7 @@ Tu postrer estado será muy grande”</h6>
 						</tr>
 		    	</tbody>
 		    </table>
-		    <h6 style="text-align:center;">DIOS TE BENDIGA<br>
-					GRACIAS POR TU PREFERENCIA<br>
-					Todo reclamo deberá realizarse dentro de los
-					13 días posteriores a la emisión de la boleta.</h6>
+		    <h6 style="text-align:center;"><?= empresa_h(empresa('empresa_gracias')) ?></h6>
 
 <?php
 use Dompdf\Dompdf;

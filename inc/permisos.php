@@ -111,6 +111,7 @@ function modulos_para_menu($solo_menu = true) {
 function config_enlaces() {
 	$extras = [
 		['configuracion', 'modulos_config.php',            'Módulos y permisos',     'ph-shield-check'],
+		['configuracion', 'empresa_config.php',            'Empresa y medios de pago','ph-buildings'],
 		['configuracion', 'actualizar_bd.php',             'Actualizar base de datos','ph-database'],
 		['tablet',        'tablet_config_admin.php',       'Configuración Tablet',   'ph-device-tablet'],
 		['facturacion',   'configuracion_facturacion.php', 'Facturación Electrónica','ph-file-text'],

@@ -1,0 +1,5 @@
+# Solo imágenes: nunca ejecutar scripts desde aquí
+<FilesMatch "\.(php|phtml|phar|pl|py|cgi)$">
+    Require all denied
+</FilesMatch>
+Options -ExecCGI -Indexes

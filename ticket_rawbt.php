@@ -3,7 +3,7 @@
 $token = preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['token'] ?? '');
 if (!$token) { http_response_code(404); exit; }
 
-$file = sys_get_temp_dir() . '/renacer_ticket_' . $token . '.bin';
+$file = sys_get_temp_dir() . '/insumos_ticket_' . $token . '.bin';
 if (!file_exists($file)) { http_response_code(404); exit; }
 
 header('Content-Type: application/octet-stream');

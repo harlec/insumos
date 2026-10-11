@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/config.php';
+<?php require_once __DIR__ . '/medios_pago.php'; require_once __DIR__ . '/config.php';
 ob_start();
 ini_set('display_errors', '0');
 error_reporting(0);
@@ -98,7 +98,9 @@ while ($row = $result->fetch_assoc()) {
 
     $cliente_venta = htmlspecialchars($row['nombre_cliente'] ?: 'Sin cliente');
 
-    $metodos_label = ['efectivo' => 'Efectivo', 'yape' => 'Yape', 'plin' => 'Plin', 'bbva' => 'BBVA', 'yape_susan' => 'Yape Susan', 'tarjeta' => 'Tarjeta'];
+    $metodos_label = [];
+    foreach (medios_todos() as $mk => $mm) { $metodos_label[$mk] = $mm['nombre']; }
+    $metodos_label['planilla'] = $metodos_label['planilla'] ?? 'Descuento planilla';
     if (!empty($row['pagos_raw'])) {
         $partes = [];
         foreach (explode('|', $row['pagos_raw']) as $linea) {
@@ -124,7 +126,7 @@ while ($row = $result->fetch_assoc()) {
     $boton_borrar = '';
     if ($row['estado'] == '0') {
         $boton_editar = ' <a title="Editar venta" class="btn btn-warning btn-sm" href="editar_venta.php?id=' . $row['id_venta'] . '"><i class="fas fa-edit"></i></a>';
-        $boton_facturar = ' <a title="Factura electrónica" class="btn btn-success btn-sm" href="factura.php?ids=' . $row['id_venta'] . '"><i class="fas fa-file-invoice-dollar"></i></a>'
+        if (puede('facturacion', 'crear')) $boton_facturar = ' <a title="Factura electrónica" class="btn btn-success btn-sm" href="factura.php?ids=' . $row['id_venta'] . '"><i class="fas fa-file-invoice-dollar"></i></a>'
                          . ' <a title="Boleta electrónica" class="btn btn-danger btn-sm" href="boleta.php?ids=' . $row['id_venta'] . '"><i class="fab fa-bitcoin"></i></a>';
         $boton_borrar = ' <button class="btn-custom btn-borrar" value="' . $row['id_venta'] . '" title="Anular venta"><img src="/assets/img/trash.png" /></button>';
     }

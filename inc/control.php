@@ -8,11 +8,12 @@ if ($_SESSION['ingress']== true) {
 	
 }
 else{
-	header("Location: index.html");
+	header("Location: index.php");
 	exit;
 }
 
 require_once __DIR__ . '/permisos.php';
+require_once __DIR__ . '/empresa.php';
 requiere_pagina(); // bloquea la página si el rol no tiene permiso sobre su módulo
 
 
@@ -61,7 +62,7 @@ function menu($i){
 function menu_v2($i){
 	$activa = menu_clave($i);
 	echo '<header class="esc-header">
-	<a class="esc-brand" href="dashboard.php"><span>GRUPO</span><b>AVASA</b></a>
+	<a class="esc-brand" href="dashboard.php">'.marca_html().'</a>
 	<nav class="esc-nav">';
 	foreach (modulos_para_menu(true) as $m) {
 		$act = ($m['clave'] == $activa);

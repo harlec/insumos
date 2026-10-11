@@ -341,21 +341,14 @@ foreach ($ventas_list as $value) {
 			if(this.value.length==11){
                   var ruc = $(this).val();
 
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("GET", "https://apisunat.harlec.com.pe/api/v1/ruc/" + ruc);
-                  xhr.setRequestHeader("Accept", "application/json");
-                  xhr.setRequestHeader("Authorization", "Bearer 0f9d806a79e9380c946795a33ed530f95fd5cf1142625dd94d557711f7a59bdd");
-                  xhr.send();
-
-                  xhr.onload = function () {
-				    if (xhr.readyState === xhr.DONE) {
-				        if (xhr.status === 200) {
-				        	var data = JSON.parse(xhr.response);
-				            $('#denominacion').val(data.razon_social);
-				            $('#direccion').val(data.direccion);
-				        }
-				    }
-				};
+                  // Consulta el RUC con el servicio configurado en Facturación Electrónica (token de Migo).
+                  $.post('/inc/consulta_documento.php', {tipo: 'ruc', numero: ruc}, function(response){
+                      try {
+                          var data = JSON.parse(response);
+                          if (data.nombre_o_razon_social) $('#denominacion').val(data.nombre_o_razon_social);
+                          if (data.direccion) $('#direccion').val(data.direccion);
+                      } catch (e) {}
+                  }, 'text');
 			}
 
 		});

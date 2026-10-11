@@ -101,12 +101,15 @@ foreach ($v7['dias'] as $d) {
     $nombre_dia7[] = $dias_es_largo[(int)date('w', strtotime($d))] . ' ' . date('d/m', strtotime($d));
 }
 
-$medio_hue = ['efectivo'=>145,'yape'=>300,'transferencia'=>230,'credito'=>25,'plin'=>190,'tarjeta'=>75,'bbva'=>260,'yape_susan'=>340];
+$medio_hue = ['efectivo'=>145,'yape'=>300,'transferencia'=>230,'credito'=>25,'plin'=>190,'tarjeta'=>75];
+$medios_digitales = medios_digitales();
+$hues_extra = [100, 330, 200, 50, 270, 160];
+$hue_i = 0;
 $digitales = 0;
 foreach ($medios['items'] as &$mi) {
-    $mi['hue'] = $medio_hue[$mi['metodo']] ?? 100;
+    $mi['hue'] = $medio_hue[$mi['metodo']] ?? $hues_extra[$hue_i++ % count($hues_extra)];
     $mi['label'] = medio_label($mi['metodo']);
-    if (in_array($mi['metodo'], ['yape','plin','transferencia','yape_susan','bbva'])) $digitales += $mi['pct'];
+    if (in_array($mi['metodo'], $medios_digitales, true)) $digitales += $mi['pct'];
 }
 unset($mi);
 
@@ -272,7 +275,7 @@ $js = [
                     <?php endforeach; ?>
                 </div>
             </div>
-            <div class="esc-callout"><?= $digitales ?>% de los pagos fueron digitales (Yape, Plin, transferencia, banco).</div>
+            <div class="esc-callout"><?= $digitales ?>% de los pagos fueron digitales (billeteras y transferencias).</div>
             <?php else: ?>
                 <div class="esc-empty">Sin pagos este mes</div>
             <?php endif; ?>

@@ -1,5 +1,8 @@
 <?php
 include('inc/control.php');
+require_once __DIR__ . '/inc/medios_pago.php';
+$medios_caja = array_filter(medios_todos(), function ($m) { return $m['activo'] && $m['selector']; });
+$medios_label_js = []; foreach (medios_todos() as $k => $m) { $medios_label_js[$k] = $m['nombre']; }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,7 +19,7 @@ include('inc/control.php');
     .caja-titulo { font-size: 22px; font-weight: 700; color: var(--c-navy); margin: 8px 0 18px; display:flex; align-items:center; gap:10px; }
     .caja-titulo .contador { font-size:14px; font-weight:600; color:#fff; background:var(--c-orange); border-radius:20px; padding:3px 12px; }
 
-    .resumen-row { display:grid; grid-template-columns: repeat(8, 1fr); gap:14px; margin-bottom:24px; }
+    .resumen-row { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin-bottom:24px; }
     .resumen-card { background:#fff; border-radius:12px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
     .resumen-card .rc-label { font-size:12px; color:#888; font-weight:600; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
     .resumen-card .rc-valor { font-size:24px; font-weight:800; color:var(--c-navy); margin-top:6px; }
@@ -199,30 +202,12 @@ include('inc/control.php');
 
 <div class="caja-wrap" style="margin-top:70px">
     <div class="resumen-row" id="resumenRow">
+        <?php foreach ($medios_caja as $k => $m): ?>
         <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-money-bill-wave"></i> Efectivo</div>
-            <div class="rc-valor" id="resEfectivo">S/ 0.00</div>
+            <div class="rc-label"><i class="fas <?= htmlspecialchars($m['icono']) ?>"></i> <?= htmlspecialchars($m['nombre']) ?></div>
+            <div class="rc-valor" id="res_<?= htmlspecialchars($k) ?>">S/ 0.00</div>
         </div>
-        <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-mobile-alt"></i> Yape</div>
-            <div class="rc-valor" id="resYape">S/ 0.00</div>
-        </div>
-        <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-mobile-alt"></i> Plin</div>
-            <div class="rc-valor" id="resPlin">S/ 0.00</div>
-        </div>
-        <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-university"></i> BBVA</div>
-            <div class="rc-valor" id="resBbva">S/ 0.00</div>
-        </div>
-        <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-mobile-alt"></i> Yape Susan</div>
-            <div class="rc-valor" id="resYapeSusan">S/ 0.00</div>
-        </div>
-        <div class="resumen-card">
-            <div class="rc-label"><i class="fas fa-credit-card"></i> Tarjeta</div>
-            <div class="rc-valor" id="resTarjeta">S/ 0.00</div>
-        </div>
+        <?php endforeach; ?>
         <div class="resumen-card">
             <div class="rc-label"><i class="fas fa-history"></i> De ventas pasadas</div>
             <div class="rc-valor" id="resVentasPasadas">S/ 0.00</div>
@@ -315,12 +300,9 @@ include('inc/control.php');
         <div class="pp-body">
             <div class="pp-left">
                 <div class="metodos">
-                    <div class="metodo-btn" data-metodo="efectivo"><i class="fas fa-money-bill-wave"></i>Efectivo</div>
-                    <div class="metodo-btn" data-metodo="yape"><i class="fas fa-mobile-alt"></i>Yape</div>
-                    <div class="metodo-btn" data-metodo="plin"><i class="fas fa-mobile-alt"></i>Plin</div>
-                    <div class="metodo-btn" data-metodo="bbva"><i class="fas fa-university"></i>BBVA</div>
-                    <div class="metodo-btn" data-metodo="yape_susan"><i class="fas fa-mobile-alt"></i>Yape Susan</div>
-                    <div class="metodo-btn" data-metodo="tarjeta"><i class="fas fa-credit-card"></i>Tarjeta</div>
+                    <?php foreach ($medios_caja as $k => $m): ?>
+                    <div class="metodo-btn" data-metodo="<?= htmlspecialchars($k) ?>"><i class="fas <?= htmlspecialchars($m['icono']) ?>"></i><?= htmlspecialchars($m['nombre']) ?></div>
+                    <?php endforeach; ?>
                 </div>
 
                 <div id="editorLinea" style="display:none">
@@ -441,12 +423,7 @@ include('inc/control.php');
     }
 
     function renderResumen(r) {
-        document.getElementById('resEfectivo').textContent = money(r.efectivo);
-        document.getElementById('resYape').textContent = money(r.yape);
-        document.getElementById('resPlin').textContent = money(r.plin);
-        document.getElementById('resBbva').textContent = money(r.bbva);
-        document.getElementById('resYapeSusan').textContent = money(r.yape_susan);
-        document.getElementById('resTarjeta').textContent = money(r.tarjeta);
+        metodosOrden.forEach(function (k) { var el = document.getElementById('res_' + k); if (el) el.textContent = money(r[k]); });
         document.getElementById('resVentasPasadas').textContent = money(r.ventas_pasadas);
         document.getElementById('resTotal').textContent = money(r.total);
     }
@@ -789,8 +766,8 @@ include('inc/control.php');
     // lo genera solo inc/registrar_planilla_periodo.php al aplicar una cuota de crédito de
     // abarrotes/adelanto como pago parcial de la venta. Antes de este fallback se mostraba
     // tal cual ("planilla") en vez de un texto legible.
-    const metodosLabel = { efectivo: 'Efectivo', yape: 'Yape', plin: 'Plin', bbva: 'BBVA', yape_susan: 'Yape Susan', tarjeta: 'Tarjeta', planilla: 'Descuento planilla' };
-    const metodosOrden = ['efectivo', 'yape', 'plin', 'bbva', 'yape_susan', 'tarjeta'];
+    const metodosLabel = <?= json_encode($medios_label_js, JSON_UNESCAPED_UNICODE) ?>;
+    const metodosOrden = <?= json_encode(array_keys($medios_caja)) ?>;
 
     // Solo afecta cómo se ve esta pestaña en este navegador — no es información
     // compartida, así que basta con recordarla en localStorage.

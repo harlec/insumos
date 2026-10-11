@@ -1,6 +1,6 @@
-# Renacer
+# Sistema de insumos
 
-Sistema de gestión y punto de venta (POS) de **Distribuidora Renacer**. Aplicación web en PHP + MySQL, con una versión de POS para tablet instalable como PWA.
+Sistema de gestión y punto de venta (POS) para la venta de insumos de producción. Aplicación web en PHP + MySQL, con una versión de POS para tablet instalable como PWA. El nombre, la marca (texto o logo), los datos de la empresa y los medios de pago se editan en **Configuración → Empresa y medios de pago**.
 
 ## Stack
 

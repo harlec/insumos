@@ -14,3 +14,8 @@ Thumbs.db
 # Configuracion local generada por el instalador (credenciales)
 /config/config.php
 /config/instalado.lock
+
+# Logo y archivos subidos por el usuario
+/assets/uploads/*
+!/assets/uploads/.gitkeep
+!/assets/uploads/.htaccess

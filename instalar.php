@@ -13,7 +13,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 $instalada = app_instalada();
 $errores   = [];
 $ok        = null;
-$v = ['host'=>'localhost','port'=>'3306','name'=>'admin_insumos','user'=>'','crear'=>'1','nombres'=>'','usuario'=>''];
+$v = ['host'=>'localhost','port'=>'3306','name'=>'admin_insumos','user'=>'','crear'=>'1','nombres'=>'','usuario'=>'','empresa'=>''];
 
 // Requisitos previos
 $req = [
@@ -25,7 +25,7 @@ $req = [
 $reqOk = !in_array(false, array_column($req, 1), true);
 
 if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
-	foreach (['host','port','name','user','nombres','usuario'] as $k) { $v[$k] = trim($_POST[$k] ?? ''); }
+	foreach (['host','port','name','user','nombres','usuario','empresa'] as $k) { $v[$k] = trim($_POST[$k] ?? ''); }
 	$v['crear'] = !empty($_POST['crear']) ? '1' : '';
 	$passDb = $_POST['pass'] ?? '';
 	$clave  = $_POST['clave'] ?? '';
@@ -33,6 +33,7 @@ if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 	if (!$reqOk) $errores[] = 'Corrige los requisitos marcados antes de instalar.';
 	if ($v['host'] === '' || $v['name'] === '' || $v['user'] === '') $errores[] = 'Completa servidor, base de datos y usuario de la base.';
 	if (!preg_match('/^[A-Za-z0-9_]+$/', $v['name'])) $errores[] = 'El nombre de la base solo puede tener letras, números y guion bajo.';
+	if ($v['empresa'] === '') $errores[] = 'Escribe el nombre de tu empresa.';
 	if ($v['nombres'] === '' || $v['usuario'] === '') $errores[] = 'Indica nombre y usuario del administrador.';
 	if (strlen($v['usuario']) > 15) $errores[] = 'El usuario admite hasta 15 caracteres.';
 	if (strlen($clave) < 8) $errores[] = 'La clave del administrador debe tener al menos 8 caracteres.';
@@ -77,6 +78,10 @@ if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 				if (file_put_contents($dirCfg . '/config.php', $php, LOCK_EX) === false) throw new RuntimeException('No se pudo escribir config/config.php');
 				@chmod($dirCfg . '/config.php', 0640);
 				file_put_contents($dirCfg . '/instalado.lock', date('c') . "\n");
+				// Datos iniciales de la empresa (se completan luego en Configuración)
+				$st = $db->prepare("INSERT INTO configuracion (parametro, valor, estado_parametro) VALUES ('empresa_nombre', ?, '1')");
+				$st->bind_param('s', $v['empresa']);
+				$st->execute();
 				$ok = $aplicadas;
 				$instalada = true;
 			} catch (Throwable $e) {
@@ -124,7 +129,7 @@ if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 	<div class="card">
 		<h2>Siguiente</h2>
 		<ul>
-			<li>Entra con el usuario <b><?= h($v['usuario']) ?></b>: <a href="index.html">ir al inicio de sesión</a>.</li>
+			<li>Entra con el usuario <b><?= h($v['usuario']) ?></b>: <a href="index.php">ir al inicio de sesión</a>.</li>
 			<li>En <b>Configuración → Módulos y permisos</b> activas los módulos y creas roles.</li>
 			<li>Por seguridad, también puedes borrar <code>instalar.php</code> del servidor.</li>
 		</ul>
@@ -133,7 +138,7 @@ if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 	<div class="card">
 		<h2>El sistema ya está instalado</h2>
 		<p>Para reinstalar, borra <code>config/config.php</code> y <code>config/instalado.lock</code> sobre una base vacía.</p>
-		<p><a href="index.html">Ir al inicio de sesión</a></p>
+		<p><a href="index.php">Ir al inicio de sesión</a></p>
 	</div>
 <?php else: ?>
 	<?php if ($errores): ?><div class="err"><?php foreach ($errores as $e) echo '<div>' . h($e) . '</div>'; ?></div><?php endif; ?>
@@ -154,6 +159,11 @@ if (!$instalada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 			<label for="user">Usuario de la base</label><input type="text" id="user" name="user" value="<?= h($v['user']) ?>" required>
 			<label for="pass">Clave de la base</label><input type="password" id="pass" name="pass">
 			<label class="chk"><input type="checkbox" name="crear" value="1" <?= $v['crear'] ? 'checked' : '' ?>> Crear la base si no existe (el usuario necesita ese permiso)</label>
+		</div>
+		<div class="card">
+			<h2>Tu empresa</h2>
+			<label for="empresa">Nombre de la empresa</label><input type="text" id="empresa" name="empresa" maxlength="80" value="<?= h($v['empresa']) ?>" required>
+			<div class="note" style="font-size:12px;color:var(--muted);margin-top:6px">Luego puedes completar RUC, dirección y logo en Configuración → Empresa y medios de pago.</div>
 		</div>
 		<div class="card">
 			<h2>Administrador</h2>
