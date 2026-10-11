@@ -168,12 +168,34 @@ a.esc-kpi:hover{border-color:#d9481c}
 .esc-stock.red{background:var(--danger-bg);color:var(--danger)}
 .esc-empty{padding:18px 0;text-align:center;color:var(--muted-2);font-size:12.5px}
 
-@media (max-width:767px){
-  .esc-header{padding:0 12px;gap:10px}
-  .esc-brand{display:none}
-  .esc-user strong{display:none}
-  .esc-main{padding:14px 12px 40px}
+/* ── Menú móvil: botón ☰ que abre un panel con los módulos en cuadrícula ── */
+.esc-burger,.esc-nav-extra{display:none}
+@media (max-width:1179px){
+  .esc-header{height:56px;padding:0 12px;gap:8px;align-items:center}
+  .esc-brand{flex-direction:row;align-items:baseline;gap:6px;margin-right:auto;min-width:0}
+  .esc-brand span{font-size:10px}
+  .esc-brand b{font-size:18px;max-width:150px}
+  .esc-brand-img{max-height:34px;max-width:140px}
+  .esc-user{gap:0;font-size:0}
+  .esc-logout{font-size:18px}
+  .esc-user strong,.esc-config{display:none}
+  .esc-logout{width:36px;height:36px}
+  .esc-burger{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--border-strong);border-radius:10px;background:#fff;color:var(--ink);font-size:22px;cursor:pointer;flex-shrink:0}
+  .esc-header.open .esc-burger{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .esc-nav{display:none;position:fixed;top:59px;left:0;right:0;bottom:0;z-index:99;background:var(--bg);padding:14px 12px 32px;overflow-y:auto;overflow-x:hidden;grid-template-columns:repeat(3,1fr);gap:8px;align-content:start}
+  .esc-header.open .esc-nav{display:grid}
+  body.esc-menu-open{overflow:hidden}
+  .esc-nav-item{width:auto;flex:none;height:86px;padding:6px;gap:4px;background:#fff;border:1px solid var(--border);border-radius:14px}
+  .esc-nav-item:hover{background:#fff}
+  .esc-nav-item span{white-space:normal;text-align:center;font-size:12.5px;line-height:1.2}
+  .esc-nav-item.active{background:var(--primary);border-color:var(--primary)}
+  .esc-nav-extra{display:flex;flex-direction:column;grid-column:1/-1;margin-top:10px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:6px}
+  .esc-nav-extra-t{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px 4px}
+  .esc-nav-extra a{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:10px;color:var(--ink-2)!important;font-size:14px}
+  .esc-nav-extra a:active{background:#fbf3ef}
+  .esc-nav-extra a i{font-size:19px;color:var(--muted)}
 }
+@media (max-width:767px){.esc-main{padding:14px 12px 40px}}
 @media print{.esc-header{display:none}}
 
 /* ── Módulos y permisos ── */

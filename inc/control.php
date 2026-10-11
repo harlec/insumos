@@ -61,16 +61,24 @@ function menu($i){
 // Requiere assets/css/escritorio.css y Phosphor Icons cargados en la página.
 function menu_v2($i){
 	$activa = menu_clave($i);
-	echo '<header class="esc-header">
+	$enlaces = config_enlaces();
+	echo '<header class="esc-header" id="esc-header">
 	<a class="esc-brand" href="dashboard.php">'.marca_html().'</a>
-	<nav class="esc-nav">';
+	<nav class="esc-nav" id="esc-nav" aria-label="Menú principal">';
 	foreach (modulos_para_menu(true) as $m) {
 		$act = ($m['clave'] == $activa);
 		echo '<a class="esc-nav-item'.($act ? ' active' : '').'" href="/'.$m['url'].'" title="'.htmlspecialchars($m['nombre']).'">
 			<i class="'.($act ? 'ph-fill' : 'ph-duotone').' '.htmlspecialchars($m['icono']).'"'.($act ? '' : ' style="color:oklch(0.62 0.17 '.$m['tono'].')"').'></i><span>'.htmlspecialchars($m['nombre']).'</span></a>';
 	}
+	// En móvil, la configuración va dentro del panel (en escritorio es el desplegable de la derecha).
+	if ($enlaces) {
+		echo '<div class="esc-nav-extra"><div class="esc-nav-extra-t">Configuración</div>';
+		foreach ($enlaces as $e) {
+			echo '<a href="/'.$e[1].'"><i class="ph '.$e[3].'"></i> '.htmlspecialchars($e[2]).'</a>';
+		}
+		echo '</div>';
+	}
 	echo '</nav>';
-	$enlaces = config_enlaces();
 	if ($enlaces) {
 		echo '<div class="dropdown esc-config">
 		<a href="#" class="esc-nav-item dropdown-toggle" data-toggle="dropdown" title="Configuración"><i class="ph-duotone ph-gear" style="color:oklch(0.62 0.17 210)"></i><span>Config.</span></a>
@@ -82,6 +90,17 @@ function menu_v2($i){
 	}
 	echo '<div class="esc-user">Hola <strong>'.htmlspecialchars(strtoupper($_SESSION['usuario']), ENT_QUOTES, 'UTF-8').'</strong>
 		<a class="esc-logout" href="salir.php" title="Salir"><i class="ph-bold ph-sign-out"></i></a></div>
-</header>';
+	<button type="button" class="esc-burger" id="esc-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="esc-nav"><i class="ph ph-list"></i></button>
+</header>
+<script>
+(function(){
+	var h = document.getElementById("esc-header"), b = document.getElementById("esc-burger");
+	if (!h || !b) return;
+	function set(abierto){ h.classList.toggle("open", abierto); document.body.classList.toggle("esc-menu-open", abierto); b.setAttribute("aria-expanded", abierto); b.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú"); b.firstElementChild.className = "ph " + (abierto ? "ph-x" : "ph-list"); }
+	b.addEventListener("click", function(){ set(!h.classList.contains("open")); });
+	document.addEventListener("keydown", function(e){ if (e.key === "Escape") set(false); });
+	window.addEventListener("resize", function(){ if (window.innerWidth > 1179) set(false); });
+})();
+</script>';
 }
 ?>
