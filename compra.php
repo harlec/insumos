@@ -208,6 +208,22 @@ foreach ($proveedoresl as $key) {
 														<div class="col-sm-2"></div>
 											    	
 												    </div>
+												  <div class="row" id="costos-adic">
+											    		<div class="col-md-12">
+											    			<h4>Costos adicionales <small>flete, descarga…</small></h4>
+											    			<p class="text-muted" style="font-size:12px;margin-bottom:8px">Se pagan al contado y se suman al costo real de cada producto de esta compra. Si el transporte cobra por bulto, la tarifa se multiplica por los bultos (cantidad ÷ contenido por bulto del producto).</p>
+											    			<table class="table table-condensed" id="tabla-costos">
+											    				<thead><tr><th>Concepto</th><th>Cómo se cobra</th><th>Tarifa / monto</th><th>Bultos</th><th class="text-right">Total</th><th></th></tr></thead>
+											    				<tbody></tbody>
+											    			</table>
+											    			<div class="form-inline" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+											    				<button type="button" class="btn btn-default btn-sm" id="add-costo"><i class="fas fa-plus"></i> Agregar costo</button>
+											    				<span id="costo-pago" style="display:none"><label style="margin:0 6px 0 0">Se paga con</label>
+											    				<select class="form-control input-sm" name="costo_metodo" style="display:inline-block;width:auto"><?php echo medios_options(); ?></select></span>
+											    				<strong id="costos-total" class="text-right" style="margin-left:auto"></strong>
+											    			</div>
+											    		</div>
+											    	</div>
 												  <button type="button" id="guardar_venta" class="btn btn-success btn-block btn-lg">Registrar</button>
 												</form>
 			
@@ -345,6 +361,7 @@ foreach ($proveedoresl as $key) {
 		                    '<input type="hidden" value="' + id_p + '" name="id_pro[]">' +
 		                    '<input type="hidden" value="' + unidad + '" name="unidad[]">' +
 		                    '<input type="hidden" class="id_vp_input" value="' + variantes[0].id_vp + '" name="id_vp[]">' +
+		                    '<input type="hidden" class="contenido_b" value="' + (variantes[0].contenido_bulto || 0) + '">' +
 		                    '<td><input class="cantidad" type="number" step="any" min="0" value="' + cantidad + '" name="cantidad[]"></td>' +
 		                    '<td>' + selectHtml + '</td>' +
 		                    '<td>' + nombre + '</td>' +
@@ -360,6 +377,7 @@ foreach ($proveedoresl as $key) {
 		                    '<input type="hidden" value="' + id_p + '" name="id_pro[]">' +
 		                    '<input type="hidden" value="' + unidad + '" name="unidad[]">' +
 		                    '<input type="hidden" name="id_vp[]" value="' + (variantes.length === 1 ? variantes[0].id_vp : '') + '">' +
+		                    '<input type="hidden" class="contenido_b" value="' + (variantes.length === 1 ? (variantes[0].contenido_bulto || 0) : 0) + '">' +
 		                    '<td><input class="cantidad" type="number" step="any" min="0" value="' + cantidad + '" name="cantidad[]"></td>' +
 		                    '<td style="text-transform:uppercase;">' + unidad + '</td>' +
 		                    '<td>' + nombre + '</td>' +
@@ -467,6 +485,43 @@ foreach ($proveedoresl as $key) {
 				  	}
 				});
 			});
+
+		// ── Costos adicionales (flete…) ──────────────────────────────────────────────
+		function bultosLinea($tr){
+			var cant = parseFloat($tr.find('.cantidad').val()) || 0, cont = parseFloat($tr.find('.contenido_b').val()) || 0;
+			return cont > 0 ? Math.ceil(cant / cont - 1e-9) : cant;
+		}
+		function bultosSugeridos(){ var t = 0; $('#items tr.child').each(function(){ t += bultosLinea($(this)); }); return t; }
+		function recalcCostos(){
+			var sug = bultosSugeridos(), totalGeneral = 0, cantTotal = 0;
+			$('#items tr.child').each(function(){ cantTotal += parseFloat($(this).find('.cantidad').val()) || 0; });
+			$('#tabla-costos tbody tr').each(function(){
+				var $r = $(this), modo = $r.find('.c-modo').val(), tarifa = parseFloat($r.find('.c-valor').val()) || 0, monto = 0;
+				$r.find('.c-bultos').toggle(modo === 'bulto');
+				if (modo === 'bulto') {
+					var b = $r.find('.c-bultos').val(); b = (b === '' ? sug : parseFloat(b) || 0);
+					$r.find('.c-bultos').attr('placeholder', sug); monto = tarifa * b;
+				} else if (modo === 'unidad') monto = tarifa * cantTotal; else monto = tarifa;
+				$r.find('.c-total').text('S/ ' + monto.toFixed(2)); totalGeneral += monto;
+			});
+			$('#costo-pago').toggle($('#tabla-costos tbody tr').length > 0);
+			$('#costos-total').text(totalGeneral > 0 ? 'Costos adicionales: S/ ' + totalGeneral.toFixed(2) : '');
+		}
+		$('#add-costo').on('click', function(){
+			$('#tabla-costos tbody').append('<tr>' +
+				'<td><input type="text" class="form-control input-sm" name="costo_concepto[]" value="Flete" maxlength="60"></td>' +
+				'<td><select class="form-control input-sm c-modo" name="costo_modo[]">' +
+					'<option value="bulto">Por bulto</option><option value="fijo_cantidad">Monto fijo (por cantidad)</option>' +
+					'<option value="fijo_valor">Monto fijo (por valor)</option><option value="unidad">Por unidad</option></select></td>' +
+				'<td><input type="number" step="any" min="0" class="form-control input-sm c-valor" name="costo_valor[]" placeholder="0.00"></td>' +
+				'<td><input type="number" step="any" min="0" class="form-control input-sm c-bultos" name="costo_bultos[]" placeholder="auto"></td>' +
+				'<td class="text-right c-total" style="white-space:nowrap"></td>' +
+				'<td><button type="button" class="btn btn-link c-borrar" title="Quitar">x</button></td></tr>');
+			recalcCostos();
+		});
+		$('body').on('click', '.c-borrar', function(){ $(this).closest('tr').remove(); recalcCostos(); });
+		$('body').on('input change keyup', '#tabla-costos input, #tabla-costos select, #items .cantidad', recalcCostos);
+		new MutationObserver(recalcCostos).observe(document.querySelector('#items tbody'), {childList: true});
 		$('body').on('click',"#guardar_venta", function(e){
           e.preventDefault();
 

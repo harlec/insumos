@@ -1,5 +1,6 @@
 <?php require_once __DIR__ . '/config.php';
 session_start();
+require_once __DIR__ . '/costos.php';
 require_once __DIR__ . '/permisos.php';
 guardia_endpoint_auto();
 if (empty($_SESSION['ingress'])) {
@@ -116,6 +117,7 @@ if (!empty($_POST)) {
 
                 $conn->query("INSERT INTO detalle_ventas (venta, producto, id_vp, cantidad, precio, total, estado)
                               VALUES ($venta_id, $pid, $ivp, $cant, $prec, $tot, '0')");
+                ventas_fijar_costos($conn, $venta_id);
 
                 $conn->query("UPDATE productos SET stockp = ROUND(stockp - $cant, 3) WHERE id_producto = $pid");
                 $rs       = $conn->query("SELECT stockp FROM productos WHERE id_producto = $pid");

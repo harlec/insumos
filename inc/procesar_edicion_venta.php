@@ -9,6 +9,7 @@ ini_set('display_errors', '0'); // Ocultar errores en producción
 error_reporting(E_ALL);
 
 session_start();
+require_once __DIR__ . '/costos.php';
 require_once __DIR__ . '/permisos.php';
 guardia_endpoint_auto();
 $id_usuario = $_SESSION['id_usr']; 
@@ -207,6 +208,7 @@ if (isset($_POST) && !empty($_POST)) {
                         'estado' => '0'
                     );
                     $detalle_ventas->insert($data_detalle);
+                    ventas_fijar_costos(null, $id_venta);
                 }
                 
                 // PASO 4: Actualizar venta

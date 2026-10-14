@@ -60,6 +60,7 @@ if (isset($_POST) && !empty($_POST)) {
 				}
 			}
 			//guardamos en tabla detalle de compra
+			$lineas_costo = array();
 			for ($i=0; $i < count($id_p) ; $i++) { 
 				if ($unidad[$i]=='TNE') {
 					$cantidad1 = $cantidad[$i]*50;
@@ -75,6 +76,10 @@ if (isset($_POST) && !empty($_POST)) {
 				$dventas = Sdba::table('detalle_compras');
 				$ddata = array('id_de_compra'=>'','compra'=>$venta_id,'producto'=>$id_p[$i],'cantidad'=>$cantidad1,'precio'=>$precio[$i],'total'=>$total_pre[$i],'estado'=>'0');
 				$dventas->insert($ddata);
+				$id_det = $dventas->insert_id();
+				$pq = Sdba::table('productos');
+				$pq->where('id_producto', $id_p[$i]);
+				$prow = $pq->get_one();
 
 				$stock = Sdba::table('stock');
 				$stock->where('producto',$id_p[$i]);
@@ -82,6 +87,7 @@ if (isset($_POST) && !empty($_POST)) {
 				$stockl = $stock->get_one();
 				$cstock = isset($stockl['stockt']) ? (float)$stockl['stockt'] : 0;
 				$stocktot = $cstock + $cantidad1;
+				$lineas_costo[] = array('pid'=>(int)$id_p[$i],'cant'=>(float)$cantidad1,'valor'=>(float)$total_pre[$i],'stock_antes'=>$cstock,'costo_antes'=>(isset($prow['costo_real']) && $prow['costo_real'] !== null) ? (float)$prow['costo_real'] : ((isset($prow['precio_compra']) && (float)$prow['precio_compra'] > 0) ? (float)$prow['precio_compra'] : null),'contenido'=>$prow['contenido_bulto'] ?? 0,'id_detalle'=>$id_det);
 
 				$motivo = 'c-'.$venta_id;
 				$datas = array('id_stock'=>'','producto'=>$id_p[$i],'ingreso'=>$cantidad1,'motivo'=>$motivo,'stock'=>$stocktot,'fv'=>'','stockt'=>$stocktot,'fecha'=>$fecha, 'estado'=>'0');
@@ -96,6 +102,10 @@ if (isset($_POST) && !empty($_POST)) {
 					$prod2->update(array('precio_compra' => floatval($precio[$i])));
 				}
 			}
+
+			// Costos adicionales (flete…) y costo real promedio por producto
+			require_once __DIR__ . '/costos_compra.php';
+			compra_aplicar_costos(db_connect(), (int)$venta_id, $lineas_costo, $_POST, (int)$id_usuario, $fecha_ingreso ?: $fecha, $metodos_pago_validos);
 
 			// Actualizar precioc_vp de variantes según la variante seleccionada
 			for ($i = 0; $i < count($id_p); $i++) {

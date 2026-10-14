@@ -100,6 +100,8 @@ if ($periodos) {
 	foreach ($ult['medios'] as $k => $md) $sugeridos[$k] = round($md['ini'] + $md['debe'] - $md['haber'], 2);
 }
 $sugerida_inicio = $periodos ? date('Y-m-d', strtotime(reset($periodos)['fecha_fin'] . ' +1 day')) : date('Y-m-01');
+require_once __DIR__ . '/inc/costos.php';
+$u = $per ? utilidad_periodo($conn, $per['fecha_inicio'], $per['fecha_fin']) : null;
 $conn->close();
 function s($n) { return 'S/ ' . number_format($n, 2); }
 ?>
@@ -153,6 +155,16 @@ function s($n) { return 'S/ ' . number_format($n, 2); }
 						<div class="col-md-3"><div class="kpi"><small>Haber (egresos)</small><h3 class="neg"><?php echo s($b['haber']); ?></h3></div></div>
 						<div class="col-md-3"><div class="kpi"><small>Saldo / caja final</small><h3 class="<?php echo $b['saldo_final'] >= 0 ? 'pos' : 'neg'; ?>"><?php echo s($b['saldo_final']); ?></h3></div></div>
 					</div>
+					<?php if ($u): ?>
+					<h4 style="margin:6px 0 10px">Utilidad del periodo <small>(ventas − costo real − gastos)</small></h4>
+					<div class="row">
+						<div class="col-md-3"><div class="kpi"><small>Ventas</small><h3><?php echo s($u['ventas']); ?></h3></div></div>
+						<div class="col-md-3"><div class="kpi"><small>Costo de lo vendido</small><h3><?php echo s($u['costo']); ?></h3></div></div>
+						<div class="col-md-3"><div class="kpi"><small>Gastos (sin fletes de compra)</small><h3 class="neg"><?php echo s($u['gastos']); ?></h3></div></div>
+						<div class="col-md-3"><div class="kpi"><small>Utilidad neta<?php if ($u['margen'] !== null) echo ' · ' . number_format($u['margen'], 1) . '%'; ?></small><h3 class="<?php echo $u['neta'] >= 0 ? 'pos' : 'neg'; ?>"><?php echo s($u['neta']); ?></h3></div></div>
+					</div>
+					<p class="text-muted" style="font-size:12px">El flete de las compras ya está incluido en el costo de cada producto; por eso no se resta de nuevo como gasto. La caja de arriba sí lo descuenta cuando se paga.<?php if ($u['sin_costo']) echo ' ' . (int)$u['sin_costo'] . ' línea(s) vendidas no tienen costo registrado y cuentan como costo 0.'; ?></p>
+					<?php endif; ?>
 					<div class="panel panel-default pa"><div class="panel-body table-responsive">
 						<h4>Saldo por medio de pago</h4>
 						<table class="table table-condensed">

@@ -108,6 +108,10 @@ foreach ($categorias_list as $value1) {
 															    <input type="number" step="0.01" class="form-control" name="precio_c" placeholder="Precio de compra">
 															</div>
 															<div class="form-group">
+															    <label>Contenido por bulto <small class="text-muted">(opcional, p. ej. 25 si viene en bolsas de 25 kg)</small></label>
+															    <input type="number" step="any" min="0" class="form-control" name="contenido_bulto" id="contenido_bulto" placeholder="Ej.: 25" value="">
+															</div>
+															<div class="form-group">
 															    <label for="exampleInputPassword1">Stock</label>
 															    <input type="number" step="any" min="0" class="form-control" name="stock" id="stock" placeholder="Stock inicial (en la unidad elegida)">
 															</div>

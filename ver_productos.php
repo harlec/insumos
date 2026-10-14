@@ -53,6 +53,13 @@ foreach ($ventas_list as $value) {
 	$btn_toggle_texto = $activo ? 'Desactivar' : 'Activar';
 	$btn_toggle_clase = $activo ? 'btn-custom toggle-estado' : 'btn-custom toggle-estado btn-inactivo';
 
+	// Costo real = promedio de compra + flete; margen sobre el precio de venta.
+	$costo_real = ($value['costo_real'] !== null && $value['costo_real'] !== '') ? (float)$value['costo_real'] : (float)$value['precio_compra'];
+	$pv_num = (float)$value['precio_venta'];
+	$costo_txt = $costo_real > 0 ? number_format($costo_real, 2) : '—';
+	$margen_txt = ($costo_real > 0 && $pv_num > 0) ? number_format(($pv_num - $costo_real) / $pv_num * 100, 1) . '%' : '—';
+	$margen_col = ($costo_real > 0 && $pv_num > 0 && $pv_num < $costo_real) ? ' style="color:#c2361a;font-weight:600"' : '';
+
 	$datos .='<tr '.$col.'><td>'.$value['id_producto'].'</td>
     			<td style="text-transform:uppercase;">'.$value['nom_prod'].'</td>
     			<td>'.$unidadn.'</td>
@@ -60,6 +67,8 @@ foreach ($ventas_list as $value) {
     			<td>'.number_format($stockt, 2).'</td>
     			<td>'.$value['precio_venta'].'</td>
     			<td>'.$value['precio_compra'].'</td>
+    			<td>'.$costo_txt.'</td>
+    			<td'.$margen_col.'>'.$margen_txt.'</td>
     			<td data-estado-badge>'.$badge_estado.'</td>
     			<td><a class="" alt="ver" href="editar_producto.php?id='.$value['id_producto'].'"><img src="assets/img/edit.png"/></a><button class="'.$btn_toggle_clase.'" value="'.$value['id_producto'].'" alt="activar/desactivar">'.$btn_toggle_texto.'</button></td>
     		  </tr>';
@@ -125,6 +134,8 @@ foreach ($ventas_list as $value) {
 											    			<th>Stock</th>
 											    			<th>Precio</th>
 											    			<th>P. Compra</th>
+											    			<th title="Promedio de compra más flete">Costo real</th>
+											    			<th title="(Precio − costo real) / precio">Margen</th>
 											    			<th>Estado</th>
 											    			<th>Opciones</th>
 											    		</tr> 

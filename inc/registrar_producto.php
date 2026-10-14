@@ -38,6 +38,7 @@ $mensajeError = 'hasta aca bien';
 			if ($venta_id) {
 				require_once __DIR__ . '/producto_helper.php';
 				variante_unica_sincronizar($venta_id, $precio_v, $_POST['precio_c'] ?? 0);
+				producto_guardar_costos($venta_id, $_POST['contenido_bulto'] ?? null, $_POST['precio_c'] ?? null);
 				$respuestaOk = true;
 				$mensajeError = 'entro';
 				//guardamos en stock

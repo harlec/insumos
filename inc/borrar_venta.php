@@ -72,6 +72,7 @@ if ($id > 0) {
         }
 
         $conn->query("UPDATE ventas SET estado = '2' WHERE id_venta = $id");
+        $conn->query("UPDATE gastos SET estado = '2' WHERE id_venta = $id"); // anula el gasto de entrega
 
         if ($mov) {
             $conn->query("DELETE FROM movimiento_cuotas WHERE id_movimiento = " . (int)$mov['id_movimiento']);

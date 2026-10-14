@@ -138,6 +138,11 @@ $stocktt = $st['stockt'];
 															<div class="form-group">
 															    <label>Precio Compra</label>
 															    <input type="number" step="0.01" class="form-control" name="precio_c" value="<?php echo $precio_c; ?>" placeholder="Precio de compra">
+															    <?php if (($ventas_list['costo_real'] ?? null) !== null && (float)$ventas_list['costo_real'] > 0): ?><small class="text-muted">Costo real con flete (promedio): <b>S/ <?php echo number_format((float)$ventas_list['costo_real'], 2); ?></b></small><?php endif; ?>
+															</div>
+															<div class="form-group">
+															    <label>Contenido por bulto <small class="text-muted">(opcional, p. ej. 25 si viene en bolsas de 25 kg)</small></label>
+															    <input type="number" step="any" min="0" class="form-control" name="contenido_bulto" id="contenido_bulto" placeholder="Ej.: 25" value="<?php echo htmlspecialchars((string)($ventas_list['contenido_bulto'] ?? '')); ?>">
 															</div>
 															<div class="form-group">
 															    <label>Stock</label>

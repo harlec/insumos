@@ -28,7 +28,7 @@ $mensajeError = 'hasta aca bien';
 		$stock->where('producto',$producto);
 		$stock->order_by('id_stock','desc');
 		$stockl = $stock->get_one();
-		$cstock = isset($stockl['stockt']) ? (int)$stockl['stockt'] : 0;
+		$cstock = isset($stockl['stockt']) ? (float)$stockl['stockt'] : 0;
 		$nstockt = $cstock - $value['ingreso']; //stock total x producto
 		$motivo = 'EC-'.$id;
 		$datas = array('id_stock'=>'','producto'=>$producto,'egreso'=>$value['ingreso'],'motivo'=>$motivo,'stock'=>$nstockt,'fv'=>'','stockt'=>$nstockt,'fecha'=>$fecha, 'estado'=>'0');
@@ -44,6 +44,12 @@ $mensajeError = 'hasta aca bien';
 	
 
 			
+			// anula los gastos de flete ligados a esta compra
+			$cn = db_connect();
+			$idc = (int)$id;
+			$cn->query("UPDATE gastos SET estado = '2' WHERE id_compra = $idc");
+			$cn->close();
+
 			$compras = Sdba::table('compras');
 			$compras->where('id_compra',$id);
 			$data = array('estado'=>'2');

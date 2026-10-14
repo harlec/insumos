@@ -2,6 +2,7 @@
 ob_start();
 ini_set('display_errors', '0');
 session_start();
+require_once __DIR__ . '/costos.php';
 require_once __DIR__ . '/permisos.php';
 guardia_endpoint_auto();
 if (empty($_SESSION['ingress'])) {
@@ -86,6 +87,7 @@ try {
         $motivo = $conn->real_escape_string('v-' . $venta_id);
         $conn->query("INSERT INTO detalle_ventas (venta, producto, id_vp, cantidad, precio, total, estado)
                       VALUES ($venta_id, {$l['producto']}, {$l['id_vp']}, {$l['cantidad']}, {$l['precio']}, {$l['total']}, '0')");
+        ventas_fijar_costos($conn, $venta_id);
 
         $conn->query("UPDATE productos SET stockp = ROUND(stockp - {$l['cantidad']}, 3) WHERE id_producto = {$l['producto']}");
         $rs       = $conn->query("SELECT stockp FROM productos WHERE id_producto = {$l['producto']}");

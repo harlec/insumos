@@ -37,6 +37,7 @@ $mensajeError = 'hasta aca bien';
 
 			require_once __DIR__ . '/producto_helper.php';
 			variante_unica_sincronizar($id, $precio_v, $_POST['precio_c'] ?? 0);
+			producto_guardar_costos($id, $_POST['contenido_bulto'] ?? null, $_POST['precio_c'] ?? null);
 				$respuestaOk = true;
 				$mensajeError = 'entro';
 

@@ -12,18 +12,16 @@ function dash_hue_vendedor($id) {
     return $hues[((int)$id) % count($hues)];
 }
 
-// Balance del mes, igual que balance.php pero solo con ventas y compras (aún sin gastos, planillas ni costos):
-// entra = cobros de ventas (venta_pagos), sale = pagos a proveedores (compra_pagos).
+// Utilidad del mes (devengada): ventas − costo de lo vendido (costo real con flete) − gastos.
+// El detalle de caja por medio de pago sigue en balance.php.
 function dash_balance($mes) {
-    $r = dash_q("SELECT SUM(vp.monto) AS m FROM venta_pagos vp INNER JOIN ventas v ON v.id_venta = vp.venta
-        WHERE v.estado != '2' AND vp.metodo != 'planilla' AND DATE_FORMAT(vp.fecha, '%Y-%m') = '$mes'");
-    $ventas = (float)($r[0]['m'] ?? 0);
-
-    $r = dash_q("SELECT SUM(cp.monto) AS m FROM compra_pagos cp INNER JOIN compras c ON c.id_compra = cp.compra
-        WHERE c.estado != '2' AND DATE_FORMAT(cp.fecha, '%Y-%m') = '$mes'");
-    $compras = (float)($r[0]['m'] ?? 0);
-
-    return ['ventas' => $ventas, 'compras' => $compras, 'saldo' => $ventas - $compras];
+    require_once __DIR__ . '/costos.php';
+    $db = db_connect();
+    $ini = $mes . '-01';
+    $fin = date('Y-m-t', strtotime($ini));
+    $u = utilidad_periodo($db, $ini, $fin);
+    $db->close();
+    return $u;
 }
 
 function dash_medios_pago($mes) {

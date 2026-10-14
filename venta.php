@@ -245,6 +245,12 @@ foreach ($empleados_venta_l as $emp) {
 														<div class="col-sm-2"></div>
 											    	
 												    </div>
+												    <div class="row" style="margin-bottom:10px">
+												    	<div class="col-md-5 col-md-offset-7">
+												    		<label for="costo_entrega">Costo de entrega (taxi) S/ <small class="text-muted">opcional, lo paga la empresa</small></label>
+												    		<input type="number" step="0.01" min="0" class="form-control" name="costo_entrega" id="costo_entrega" placeholder="0.00">
+												    	</div>
+												    </div>
 												  <button type="button" id="guardar_venta" class="btn btn-success btn-block btn-lg">Registrar</button>
 												</form>
 			

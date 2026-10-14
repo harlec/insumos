@@ -1,5 +1,6 @@
 <?php require_once __DIR__ . '/config.php';
 session_start();
+require_once __DIR__ . '/costos.php';
 require_once __DIR__ . '/permisos.php';
 guardia_endpoint_auto();
 $id_usuario = $_SESSION['id_usr'];
@@ -133,6 +134,7 @@ if (isset($_POST) && !empty($_POST)) {
                 // Detalle venta
                 $conn->query("INSERT INTO detalle_ventas (venta, producto, id_vp, cantidad, precio, total, estado)
                               VALUES ($venta_id, $pid, $ivp, $cant, $prec, $tot, '0')");
+                ventas_fijar_costos($conn, $venta_id);
 
                 // Descontar stock atómicamente y leer resultado
                 $conn->query("UPDATE productos SET stockp = ROUND(stockp - $cant, 3) WHERE id_producto = $pid");
@@ -167,6 +169,14 @@ if (isset($_POST) && !empty($_POST)) {
                 }
                 $ultimo_monto = round($total_safe - $acumulado, 2);
                 $conn->query("INSERT INTO movimiento_cuotas (id_movimiento, numero_cuota, monto) VALUES ($id_movimiento, $cuotas, $ultimo_monto)");
+            }
+
+            // Entrega local (taxi): la paga la empresa al contado, queda como gasto ligado a la venta.
+            $costo_entrega = round(floatval($_POST['costo_entrega'] ?? 0), 2);
+            if ($costo_entrega > 0) {
+                $desc_ent = $conn->real_escape_string('Entrega de la venta #' . $venta_id);
+                $conn->query("INSERT INTO gastos (fecha, tipo, categoria, descripcion, monto, metodo, usuario, estado, fecha_registro, id_venta)
+                              VALUES ('$fecha_safe', 'puntual', 'Entrega local', '$desc_ent', $costo_entrega, 'efectivo', $id_usuario, '1', NOW(), $venta_id)");
             }
 
             $conn->commit();

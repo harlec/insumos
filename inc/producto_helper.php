@@ -36,3 +36,22 @@ function variante_unica_sincronizar($producto, $precio_venta, $precio_compra) {
 	$db->close();
 	return $ok;
 }
+
+// Guarda el contenido por bulto y deja el costo real inicial igual al precio de compra si aún no tiene.
+function producto_guardar_costos($producto, $contenido_bulto, $precio_compra = null) {
+	$db = db_connect();
+	if ($db->connect_errno) return false;
+	$producto = (int)$producto;
+	$c = ($contenido_bulto === '' || $contenido_bulto === null || (float)$contenido_bulto <= 0) ? null : (float)$contenido_bulto;
+	$st = $db->prepare("UPDATE productos SET contenido_bulto = ? WHERE id_producto = ?");
+	$st->bind_param('di', $c, $producto);
+	$ok = @$st->execute();
+	if ($precio_compra !== null && (float)$precio_compra > 0) {
+		$pc = (float)$precio_compra;
+		$st = $db->prepare("UPDATE productos SET costo_real = ? WHERE id_producto = ? AND costo_real IS NULL");
+		$st->bind_param('di', $pc, $producto);
+		@$st->execute();
+	}
+	$db->close();
+	return $ok;
+}

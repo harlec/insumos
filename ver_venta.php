@@ -35,6 +35,20 @@ foreach ($ventas_list as $value) {
     $i++;
 }
 
+// Resultado de esta venta (solo para quien ve reportes): ventas − costo real − entrega (gasto de la venta).
+$resultado = null;
+if (puede('reportes', 'ver')) {
+	$cx = db_connect();
+	$idv = (int)$id;
+	$r = @$cx->query("SELECT COALESCE(SUM((dv.cantidad + 0) * COALESCE(dv.costo_unit, NULLIF(p.costo_real, 0), NULLIF(p.precio_compra + 0, 0), 0)), 0) AS costo
+		FROM detalle_ventas dv LEFT JOIN productos p ON p.id_producto = dv.producto WHERE dv.venta = $idv");
+	$costo_venta = $r ? (float)$r->fetch_assoc()['costo'] : 0;
+	$r = @$cx->query("SELECT COALESCE(SUM(monto), 0) AS m FROM gastos WHERE id_venta = $idv AND estado = '1'");
+	$entrega_venta = $r ? (float)$r->fetch_assoc()['m'] : 0;
+	$cx->close();
+	$resultado = ['costo' => round($costo_venta, 2), 'entrega' => round($entrega_venta, 2), 'utilidad' => round($tot - $costo_venta - $entrega_venta, 2)];
+}
+
 ?>
 
 
@@ -107,6 +121,13 @@ foreach ($ventas_list as $value) {
 											    	</tbody> 
 											    </table>
 											    <p class="text-right"><strong>Total: S/ <?php echo $tot; ?></strong></p>
+											    <?php if ($resultado): ?>
+											    <table class="table table-condensed" style="max-width:360px;margin-left:auto">
+											    	<tr><td class="text-muted">Costo de lo vendido</td><td class="text-right">S/ <?php echo number_format($resultado['costo'], 2); ?></td></tr>
+											    	<tr><td class="text-muted">Costo de entrega <small>(lo asume la empresa)</small></td><td class="text-right">S/ <?php echo number_format($resultado['entrega'], 2); ?></td></tr>
+											    	<tr><td><strong>Utilidad de esta venta</strong></td><td class="text-right"><strong style="color:<?php echo $resultado['utilidad'] >= 0 ? '#2d6b3a' : '#c2361a'; ?>">S/ <?php echo number_format($resultado['utilidad'], 2); ?></strong></td></tr>
+											    </table>
+											    <?php endif; ?>
 											    <center>
 											    	
 												    <a target="_blank" class="btn btn-primary btn-lg <?php echo $ocultar;?>" href="recibo.php?id=<?php echo $id; ?>">Recibo</a>
