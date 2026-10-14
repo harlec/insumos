@@ -220,8 +220,12 @@ foreach ($proveedoresl as $key) {
 											    				<button type="button" class="btn btn-default btn-sm" id="add-costo"><i class="fas fa-plus"></i> Agregar costo</button>
 											    				<span id="costo-pago" style="display:none"><label style="margin:0 6px 0 0">Se paga con</label>
 											    				<select class="form-control input-sm" name="costo_metodo" style="display:inline-block;width:auto"><?php echo medios_options(); ?></select></span>
-											    				<strong id="costos-total" class="text-right" style="margin-left:auto"></strong>
-											    			</div>
+											    				</div>
+											    			<table class="table table-condensed" id="resumen-compra" style="max-width:420px;margin:12px 0 0 auto">
+											    				<tr><td class="text-muted">Productos (a pagar al proveedor)</td><td class="text-right" id="rc-productos">S/ 0.00</td></tr>
+											    				<tr><td class="text-muted">Costos adicionales (flete, descarga…)</td><td class="text-right" id="rc-costos">S/ 0.00</td></tr>
+											    				<tr style="font-size:16px"><td><strong>Total de la compra</strong></td><td class="text-right"><strong id="rc-total">S/ 0.00</strong></td></tr>
+											    			</table>
 											    		</div>
 											    	</div>
 												  <button type="button" id="guardar_venta" class="btn btn-success btn-block btn-lg">Registrar</button>
@@ -505,12 +509,16 @@ foreach ($proveedoresl as $key) {
 				$r.find('.c-total').text('S/ ' + monto.toFixed(2)); totalGeneral += monto;
 			});
 			$('#costo-pago').toggle($('#tabla-costos tbody tr').length > 0);
-			$('#costos-total').text(totalGeneral > 0 ? 'Costos adicionales: S/ ' + totalGeneral.toFixed(2) : '');
+			var productos = 0;
+			$('#items tr.child .mon').each(function(){ productos += parseFloat($(this).val()) || 0; });
+			$('#rc-productos').text('S/ ' + productos.toFixed(2));
+			$('#rc-costos').text('S/ ' + totalGeneral.toFixed(2));
+			$('#rc-total').text('S/ ' + (productos + totalGeneral).toFixed(2));
 		}
 		$('#add-costo').on('click', function(){
 			$('#tabla-costos tbody').append('<tr>' +
 				'<td><input type="text" class="form-control input-sm" name="costo_concepto[]" value="Flete" maxlength="60"></td>' +
-				'<td><select class="form-control input-sm c-modo" name="costo_modo[]">' +
+				'<td><select class="form-control input-sm c-modo" name="costo_modo[]" style="min-width:200px">' +
 					'<option value="bulto">Por bulto</option><option value="fijo_cantidad">Monto fijo (por cantidad)</option>' +
 					'<option value="fijo_valor">Monto fijo (por valor)</option><option value="unidad">Por unidad</option></select></td>' +
 				'<td><input type="number" step="any" min="0" class="form-control input-sm c-valor" name="costo_valor[]" placeholder="0.00"></td>' +
@@ -520,7 +528,7 @@ foreach ($proveedoresl as $key) {
 			recalcCostos();
 		});
 		$('body').on('click', '.c-borrar', function(){ $(this).closest('tr').remove(); recalcCostos(); });
-		$('body').on('input change keyup', '#tabla-costos input, #tabla-costos select, #items .cantidad', recalcCostos);
+		$('body').on('input change keyup', '#tabla-costos input, #tabla-costos select, #items .cantidad, #items .pre', function(){ setTimeout(recalcCostos, 0); });
 		new MutationObserver(recalcCostos).observe(document.querySelector('#items tbody'), {childList: true});
 		$('body').on('click',"#guardar_venta", function(e){
           e.preventDefault();
