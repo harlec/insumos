@@ -17,6 +17,15 @@ function cfg($ruta = null, $defecto = null) {
 	return $v;
 }
 
+// Errores de PHP: en producción no se muestran en pantalla (corrompen las respuestas JSON de los
+// formularios y se ven como "error"); se registran en el log del servidor. Para depurar,
+// agrega 'debug' => true en config/config.php.
+if (!cfg('debug', false)) {
+	ini_set('display_errors', '0');
+	ini_set('display_startup_errors', '0');
+	ini_set('log_errors', '1');
+}
+
 function app_instalada() {
 	return is_file(dirname(__DIR__) . '/config/config.php') && is_file(dirname(__DIR__) . '/config/instalado.lock');
 }

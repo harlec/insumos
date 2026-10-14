@@ -15,7 +15,6 @@ $serie = $ventas_list['serie'];
 $precio = $ventas_list['precio_venta'];
 $precio_c = $ventas_list['precio_compra'];
 $categoria = $ventas_list['categoria'];
-$marca = $ventas_list['marca'];
 $stockp = $ventas_list['stockp'];
 $unidad_prod = $ventas_list['unidad_prod'];
 $exonerada = $ventas_list['exonerada'];
@@ -187,7 +186,7 @@ $stocktt = $st['stockt'];
 						    <h3>Agregar registro</h3>
 						    <form id="stockfrm">
 						    	<input type="hidden" name="producto" value="<?php echo $id; ?>">
-						    	<input type="hidden" name="total" value="<?php echo $total; ?>">
+						    	<input type="hidden" name="total" value="<?php echo $stocktt; ?>">
 						    	<div class="form-group">
 						    		<label>Tipo</label>
 						    		<select name ="tipo" class="form-control">
@@ -241,7 +240,7 @@ $stocktt = $st['stockt'];
 					</div>
 					<div class="form-group">
 						<label id="lbl_cantidad">Cantidad a ingresar</label>
-						<input type="number" class="form-control" id="modal_cantidad" min="0" placeholder="0">
+						<input type="number" class="form-control" id="modal_cantidad" min="0" step="any" placeholder="0">
 						<small id="ajuste_hint" class="text-muted" style="display:none;">El sistema calculará la diferencia automáticamente.</small>
 					</div>
 					<div class="form-group">
@@ -274,9 +273,6 @@ $stocktt = $st['stockt'];
 
 		$('#categorias').select2();
 		$('#marca').select2();
-
-			    }
-		    });
 
 		$('body').on('click',"#guardar_venta", function(e){
             e.preventDefault();
